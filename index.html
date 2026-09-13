@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Live Extractor — Mobile Admin</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      padding: 6px;
+      min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ---- TABS ---- */
+    .tabs {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 4px;
+      padding-bottom: 6px;
+      scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .tabs::-webkit-scrollbar {
+      height: 3px;
+    }
+
+    .tabs::-webkit-scrollbar-thumb {
+      background: #b0b8c4;
+      border-radius: 4px;
+    }
+
+    .tab-btn {
+      flex: 0 0 auto;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px 8px 0 0;
+      background: #d9dde3;
+      color: #455566;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: 0.15s;
+      font-family: inherit;
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: #14324f;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .tab-btn.add-tab {
+      background: #1f3b57;
+      color: #fff;
+      font-size: 15px;
+      padding: 8px 16px;
+    }
+
+    /* ---- PANELS ---- */
+    .panel {
+      display: none;
+      background: #ffffff;
+      border-radius: 0 8px 8px 8px;
+      padding: 10px 8px;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+      animation: fade 0.2s;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    @keyframes fade {
+      from { opacity: 0.6; }
+      to { opacity: 1; }
+    }
+
+    /* ---- HEADER ---- */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .header-left h2 {
+      font-size: 15px;
+      color: #14324f;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .header-left p {
+      font-size: 10px;
+      color: #5a6b7c;
+    }
+
+    .conn-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: #f0f0f0;
+      color: #777;
+      white-space: nowrap;
+    }
+
+    .conn-badge.ok {
+      background: #e6f4e6;
+      color: #1a7f37;
+    }
+
+    .conn-badge.err {
+      background: #fce8e8;
+      color: #c62828;
+    }
+
+    .project-info {
+      font-size: 10px;
+      color: #5a6b7c;
+      background: #f8f9fb;
+      padding: 5px 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .project-info .url {
+      font-family: 'Consolas', monospace;
+      font-size: 9px;
+      color: #7a8894;
+      word-break: break-all;
+      max-width: 60%;
+    }
+
+    .project-info button {
+      font-size: 10px;
+      padding: 3px 8px;
+      border: 1px solid #c0c8d4;
+      border-radius: 5px;
+      background: #fff;
+      color: #455566;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* ---- STATS ---- */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .stat-card {
+      background: #f8f9fb;
+      border-radius: 8px;
+      padding: 6px 2px;
+      text-align: center;
+      border: 1px solid #e8ecf0;
+    }
+
+    .stat-card .label {
+      font-size: 8px;
+      font-weight: 700;
+      color: #7a8894;
+      letter-spacing: 0.3px;
+    }
+
+    .stat-card .value {
+      font-size: 16px;
+      font-weight: 800;
+      color: #14324f;
+      line-height: 1.2;
+    }
+
+    .stat-card.online .value { color: #1a7f37; }
+    .stat-card.offline .value { color: #7a7a7a; }
+    .stat-card.data .value { color: #14324f; }
+    .stat-card.updated .value { font-size: 12px; color: #5a6b7c; }
+
+    /* ---- DROPDOWNS ---- */
+    .dropdown-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .dd-box {
+      background: #f8f9fb;
+      border-radius: 8px;
+      padding: 6px;
+      border: 1px solid #e8ecf0;
+    }
+
+    .dd-box .dd-title {
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .dd-box.online .dd-title { color: #1a7f37; }
+    .dd-box.offline .dd-title { color: #6b7280; }
+
+    .dd-box select {
+      width: 100%;
+      padding: 6px 8px;
+      font-size: 11px;
+      font-family: 'Consolas', monospace;
+      border: 1px solid #c8d0da;
+      border-radius: 6px;
+      background: #fff;
+      color: #1a1a2e;
+      -webkit-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%236b7280' d='M5 7L1 3h8z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+    }
+
+    /* ---- DETAILS ---- */
+    .details-box {
+      background: #f8f9fb;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+      border: 1px solid #e8ecf0;
+    }
+
+    .details-box .dt-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #1f3b57;
+      margin-bottom: 5px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px 10px;
+    }
+
+    .detail-item {
+      display: flex;
+      gap: 4px;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .detail-item .d-label {
+      font-weight: 700;
+      color: #1f3b57;
+      min-width: 52px;
+      font-size: 10px;
+    }
+
+    .detail-item .d-value {
+      font-family: 'Consolas', monospace;
+      font-size: 10px;
+      color: #2d3a4a;
+      word-break: break-all;
+    }
+
+    /* ---- MONITOR TABLE ---- */
+    .monitor-box {
+      background: #f8f9fb;
+      border-radius: 8px;
+      padding: 6px;
+      margin-bottom: 8px;
+      border: 1px solid #e8ecf0;
+      overflow: hidden;
+    }
+
+    .monitor-box .mt-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #1f3b57;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 6px;
+      border: 1px solid #e0e6ec;
+    }
+
+    .table-wrap table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+      font-family: 'Segoe UI', sans-serif;
+      min-width: 520px;
+    }
+
+    .table-wrap th {
+      background: #eef1f6;
+      color: #1f3b57;
+      font-weight: 700;
+      padding: 5px 6px;
+      text-align: left;
+      white-space: nowrap;
+      border-bottom: 1px solid #d8dee6;
+      font-size: 9px;
+      letter-spacing: 0.3px;
+    }
+
+    .table-wrap td {
+      padding: 4px 6px;
+      border-bottom: 1px solid #eef1f6;
+      white-space: nowrap;
+    }
+
+    .table-wrap tr.online-row { background: #e8f7e8; }
+    .table-wrap tr.offline-row { background: #f0f0f0; }
+
+    .table-wrap tr:last-child td { border-bottom: none; }
+
+    /* ---- ACTION BUTTONS ---- */
+    .action-section {
+      background: #f8f9fb;
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+      border: 1px solid #e8ecf0;
+    }
+
+    .action-section .as-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: #1f3b57;
+      margin-bottom: 5px;
+    }
+
+    .btn-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .btn-grid button {
+      flex: 1 1 auto;
+      min-width: 70px;
+      padding: 7px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      background: #e8ecf0;
+      color: #2d3a4a;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 0.12s;
+      white-space: nowrap;
+    }
+
+    .btn-grid button:active {
+      transform: scale(0.96);
+    }
+
+    .btn-grid button.primary {
+      background: #1f3b57;
+      color: #fff;
+    }
+
+    .btn-grid button.success {
+      background: #1a7f37;
+      color: #fff;
+    }
+
+    .btn-grid button.warn {
+      background: #b45309;
+      color: #fff;
+    }
+
+    .btn-grid button.refresh-btn {
+      background: #e8ecf0;
+      color: #2d3a4a;
+      flex: 0 0 auto;
+      min-width: 40px;
+    }
+
+    /* ---- DATE ROW ---- */
+    .date-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .date-row input[type="date"] {
+      padding: 6px 8px;
+      font-size: 11px;
+      border: 1px solid #c8d0da;
+      border-radius: 6px;
+      font-family: 'Consolas', monospace;
+      background: #fff;
+      color: #1a1a2e;
+      flex: 1 1 120px;
+      min-width: 120px;
+    }
+
+    .date-row button {
+      padding: 7px 10px;
+      font-size: 10px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    /* ---- LOG ---- */
+    .log-box {
+      background: #1e1e2e;
+      border-radius: 8px;
+      padding: 6px 8px;
+      max-height: 100px;
+      overflow-y: auto;
+      font-family: 'Consolas', monospace;
+      font-size: 9px;
+      line-height: 1.5;
+      color: #cdd6f4;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .log-box .log-line {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .log-box .log-line .ts {
+      color: #6c7086;
+      margin-right: 4px;
+    }
+
+    .log-box .log-line.err { color: #f38ba8; }
+
+    /* ---- ADD FORM ---- */
+    .add-form {
+      max-width: 520px;
+    }
+
+    .add-form h2 {
+      font-size: 16px;
+      color: #14324f;
+      margin-bottom: 4px;
+    }
+
+    .add-form .sub {
+      font-size: 11px;
+      color: #5a6b7c;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      color: #1f3b57;
+      margin-bottom: 3px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 12px;
+      border: 1px solid #c8d0da;
+      border-radius: 8px;
+      font-family: 'Consolas', monospace;
+      background: #fff;
+      color: #1a1a2e;
+    }
+
+    .form-group input:focus {
+      outline: 2px solid #1f3b57;
+      outline-offset: 1px;
+    }
+
+    .form-group .hint {
+      font-size: 9px;
+      color: #7a8894;
+      margin-top: 2px;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .form-actions button {
+      padding: 10px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .form-actions button.primary {
+      background: #1f3b57;
+      color: #fff;
+    }
+
+    .form-actions button.secondary {
+      background: #e8ecf0;
+      color: #2d3a4a;
+    }
+
+    .add-status {
+      font-size: 11px;
+      font-style: italic;
+      color: #1f3b57;
+      margin-top: 10px;
+      min-height: 18px;
+    }
+
+    .saved-list {
+      margin-top: 16px;
+      border-top: 1px solid #e8ecf0;
+      padding-top: 10px;
+    }
+
+    .saved-list h3 {
+      font-size: 12px;
+      color: #1f3b57;
+      margin-bottom: 6px;
+    }
+
+    .saved-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      background: #f8f9fb;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      font-size: 11px;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .saved-item .name {
+      font-weight: 700;
+      color: #14324f;
+    }
+
+    .saved-item .pid {
+      font-family: 'Consolas', monospace;
+      font-size: 9px;
+      color: #7a8894;
+      word-break: break-all;
+    }
+
+    /* ---- MISC ---- */
+    .empty-msg {
+      font-size: 11px;
+      color: #9aa4b0;
+      font-style: italic;
+      padding: 6px 0;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e1e2e;
+      color: #cdd6f4;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      max-width: 90vw;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= TABS ================= -->
+  <div class="tabs" id="tabs"></div>
+
+  <!-- ================= PANELS ================= -->
+  <div id="panels"></div>
+
+  <!-- ================= TOAST ================= -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ============================================================
+    // CONFIGURATION
+    // ============================================================
+    const DEFAULT_SUPABASE_URL = 'https://ofxrxrvcwvcshpaxlusy.supabase.co';
+    const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9meHJ4cnZjd3Zjc2hwYXhsdXN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyMTc0NDcsImV4cCI6MjEwNDc5MzQ0N30.qZzjdg-VUUTHsLTa6LA0McxsiSJxoCpMAx03LBAAwuk';
+    const DEFAULT_PROJECT_ID = 'ofxrxrvcwvcshpaxlusy';
+    const REQUEST_TIMEOUT = 20000;
+    const REFRESH_INTERVAL = 5000;
+    const ONLINE_SECONDS = 30;
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let projects = [];
+    let activeTabIndex = 0;
+    let refreshTimers = {};
+    let stateMap = {}; // key -> { sources, onlineMap, offlineMap, refreshInProgress, selectedOnline, selectedOffline }
+
+    // ============================================================
+    // UTILS
+    // ============================================================
+    function parseDateTime(value) {
+      if (!value) return null;
+      try {
+        let v = String(value);
+        if (v.endsWith('Z')) v = v.slice(0, -1) + '+00:00';
+        const d = new Date(v);
+        if (isNaN(d.getTime())) return null;
+        return d;
+      } catch (e) { return null; }
+    }
+
+    function isOnline(lastSeen) {
+      const dt = parseDateTime(lastSeen);
+      if (!dt) return false;
+      const age = (Date.now() - dt.getTime()) / 1000;
+      return age <= ONLINE_SECONDS;
+    }
+
+    function formatLastSeen(value) {
+      const dt = parseDateTime(value);
+      if (!dt) return '-';
+      try {
+        const y = dt.getFullYear();
+        const m = String(dt.getMonth() + 1).padStart(2, '0');
+        const d = String(dt.getDate()).padStart(2, '0');
+        const h = String(dt.getHours()).padStart(2, '0');
+        const mi = String(dt.getMinutes()).padStart(2, '0');
+        const s = String(dt.getSeconds()).padStart(2, '0');
+        return `${y}-${m}-${d} ${h}:${mi}:${s}`;
+      } catch (e) { return String(value); }
+    }
+
+    function safeFilename(name) {
+      return String(name).replace(/[^a-zA-Z0-9\-_.]/g, '_');
+    }
+
+    function dayStartISO(y, m, d) {
+      return new Date(Date.UTC(y, m - 1, d, 0, 0, 0)).toISOString();
+    }
+
+    function dayEndISO(y, m, d) {
+      return new Date(Date.UTC(y, m - 1, d, 23, 59, 59)).toISOString();
+    }
+
+    function showToast(msg, duration = 3000) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.classList.remove('show'), duration);
+    }
+
+    // ============================================================
+    // SUPABASE CLIENT
+    // ============================================================
+    class SupabaseAdmin {
+      constructor(url, anonKey) {
+        this.url = url.replace(/\/+$/, '');
+        this.headers = {
+          'apikey': anonKey,
+          'Authorization': `Bearer ${anonKey}`,
+          'Content-Type': 'application/json'
+        };
+      }
+
+      async _get(path, params) {
+        const qs = new URLSearchParams(params).toString();
+        const url = `${this.url}/rest/v1/${path}?${qs}`;
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+        try {
+          const resp = await fetch(url, {
+            headers: this.headers,
+            signal: controller.signal
+          });
+          clearTimeout(timer);
+          if (!resp.ok) {
+            const text = await resp.text();
+            throw new Error(`HTTP ${resp.status}: ${text.slice(0, 300)}`);
+          }
+          return await resp.json();
+        } catch (e) {
+          clearTimeout(timer);
+          throw e;
+        }
+      }
+
+      async getSources() {
+        return this._get('extractor_sources', { select: '*', order: 'last_seen.desc' });
+      }
+
+      async getLiveRecords(sourceId) {
+        const params = { select: '*', order: 'first_seen.asc' };
+        if (sourceId) params.source_id = `eq.${sourceId}`;
+        return this._get('extracted_group_emails', params);
+      }
+
+      async getLiveRecordsForSources(sourceIds) {
+        if (!sourceIds.length) return [];
+        return this._get('extracted_group_emails', {
+          select: '*',
+          source_id: `in.(${sourceIds.join(',')})`,
+          order: 'source_id.asc,group_name.asc'
+        });
+      }
+
+      async getArchiveRecords(sourceId) {
+        const params = { select: '*', order: 'snapshot_at.asc' };
+        if (sourceId) params.source_id = `eq.${sourceId}`;
+        return this._get('extracted_snapshots', params);
+      }
+
+      async getArchiveRecordsByDate(startISO, endISO) {
+        return this._get('extracted_snapshots', {
+          select: '*',
+          and: `(snapshot_at.gte.${startISO},snapshot_at.lte.${endISO})`,
+          order: 'snapshot_at.asc'
+        });
+      }
+    }
+
+    // ============================================================
+    // CSV WRITER
+    // ============================================================
+    function writeCSV(records, kind) {
+      let columns;
+      if (kind === 'LIVE') {
+        columns = ['source_id', 'computer_name', 'local_ip', 'group_name',
+          'group_email', 'account', 'row_key', 'first_seen', 'last_seen', 'updated_at'];
+      } else {
+        columns = ['source_id', 'computer_name', 'local_ip', 'group_name',
+          'group_email', 'account', 'row_key', 'snapshot_at'];
+      }
+
+      const escape = (val) => {
+        const s = String(val == null ? '' : val);
+        if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+          return '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+      };
+
+      let csv = columns.map(escape).join(',') + '\n';
+      for (const rec of records) {
+        csv += columns.map(c => escape(rec[c])).join(',') + '\n';
+      }
+      return csv;
+    }
+
+    function downloadCSV(content, filename) {
+      // Add BOM for Excel UTF-8
+      const blob = new Blob(['\uFEFF' + content], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }
+
+    // ============================================================
+    // PROJECT STORAGE
+    // ============================================================
+    function loadProjects() {
+      try {
+        const raw = localStorage.getItem('extractor_projects');
+        if (raw) {
+          const data = JSON.parse(raw);
+          if (Array.isArray(data) && data.length) {
+            return data.map(p => ({
+              name: p.name || p.project_id || 'Project',
+              url: (p.url || '').trim(),
+              anon_key: (p.anon_key || '').trim(),
+              project_id: (p.project_id || '').trim()
+            })).filter(p => p.url && p.anon_key);
+          }
+        }
+      } catch (e) { /* ignore */ }
+      return [{
+        name: 'Default Project',
+        url: DEFAULT_SUPABASE_URL,
+        anon_key: DEFAULT_SUPABASE_ANON_KEY,
+        project_id: DEFAULT_PROJECT_ID
+      }];
+    }
+
+    function saveProjects() {
+      try {
+        localStorage.setItem('extractor_projects', JSON.stringify(projects));
+      } catch (e) { /* ignore */ }
+    }
+
+    // ============================================================
+    // RENDER
+    // ============================================================
+    function renderTabs() {
+      const tabsEl = document.getElementById('tabs');
+      tabsEl.innerHTML = '';
+
+      projects.forEach((proj, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'tab-btn' + (i === activeTabIndex ? ' active' : '');
+        btn.textContent = proj.name || proj.project_id || 'Project';
+        btn.onclick = () => switchTab(i);
+        tabsEl.appendChild(btn);
+      });
+
+      // Add tab button
+      const addBtn = document.createElement('button');
+      addBtn.className = 'tab-btn add-tab';
+      addBtn.textContent = '+';
+      addBtn.onclick = () => switchTab(-1);
+      tabsEl.appendChild(addBtn);
+    }
+
+    function switchTab(index) {
+      activeTabIndex = index;
+      renderTabs();
+      renderPanels();
+      if (index >= 0) {
+        startRefresh(index);
+      }
+    }
+
+    function renderPanels() {
+      const panelsEl = document.getElementById('panels');
+      panelsEl.innerHTML = '';
+
+      projects.forEach((proj, i) => {
+        const panel = document.createElement('div');
+        panel.className = 'panel' + (i === activeTabIndex ? ' active' : '');
+        panel.id = `panel-${i}`;
+        panel.innerHTML = buildPanelHTML(proj, i);
+        panelsEl.appendChild(panel);
+      });
+
+      // Add project panel
+      const addPanel = document.createElement('div');
+      addPanel.className = 'panel' + (activeTabIndex === -1 ? ' active' : '');
+      addPanel.id = 'panel-add';
+      addPanel.innerHTML = buildAddPanelHTML();
+      panelsEl.appendChild(addPanel);
+
+      // Attach event listeners after DOM is created
+      if (activeTabIndex >= 0) {
+        attachPanelEvents(activeTabIndex);
+      } else {
+        attachAddPanelEvents();
+      }
+    }
+
+    function buildPanelHTML(proj, idx) {
+      const state = stateMap[idx] || {};
+      const sources = state.sources || [];
+      const onlineMap = state.onlineMap || {};
+      const offlineMap = state.offlineMap || {};
+
+      // Compute stats
+      let total = sources.length;
+      let onlineCount = 0, offlineCount = 0, totalData = 0;
+      const onlineLabels = [], offlineLabels = [];
+      const monitorRows = [];
+
+      for (const src of sources) {
+        const sid = String(src.source_id || '');
+        const computer = String(src.computer_name || '');
+        const ip = String(src.local_ip || '');
+        const lastSeen = src.last_seen || '';
+        let dataCount = 0;
+        try { dataCount = parseInt(src.total_records) || 0; } catch (e) { }
+        totalData += dataCount;
+
+        const onlineFlag = isOnline(lastSeen);
+        const seenTxt = formatLastSeen(lastSeen);
+        const label = `${computer}  |  IP: ${ip}  |  Data: ${dataCount}`;
+
+        if (onlineFlag) {
+          onlineCount++;
+          onlineLabels.push({ computer: computer.toLowerCase(), label, src });
+          monitorRows.push({ status: '🟢 ON', computer, ip, data: dataCount, seen: seenTxt, sid, tag: 'online-row' });
+        } else {
+          offlineCount++;
+          offlineLabels.push({ computer: computer.toLowerCase(), label, src });
+          monitorRows.push({ status: '⚫ OFF', computer, ip, data: dataCount, seen: seenTxt, sid, tag: 'offline-row' });
+        }
+      }
+
+      onlineLabels.sort((a, b) => a.computer.localeCompare(b.computer));
+      offlineLabels.sort((a, b) => a.computer.localeCompare(b.computer));
+      monitorRows.sort((a, b) => {
+        if (a.tag !== b.tag) return a.tag === 'online-row' ? -1 : 1;
+        return a.computer.toLowerCase().localeCompare(b.computer.toLowerCase());
+      });
+
+      // Build dropdowns
+      const onlineOpts = onlineLabels.map(o =>
+        `<option value="${escapeHtml(o.label)}"${state.selectedOnline === o.label ? ' selected' : ''}>${escapeHtml(o.label)}</option>`
+      ).join('');
+
+      const offlineOpts = offlineLabels.map(o =>
+        `<option value="${escapeHtml(o.label)}"${state.selectedOffline === o.label ? ' selected' : ''}>${escapeHtml(o.label)}</option>`
+      ).join('');
+
+      // Selected source details
+      let selectedSrc = null;
+      if (state.selectedOnline && onlineMap[state.selectedOnline]) {
+        selectedSrc = onlineMap[state.selectedOnline];
+      } else if (state.selectedOffline && offlineMap[state.selectedOffline]) {
+        selectedSrc = offlineMap[state.selectedOffline];
+      }
+
+      let detailHTML = '';
+      if (selectedSrc) {
+        const computer = String(selectedSrc.computer_name || '');
+        const ip = String(selectedSrc.local_ip || '');
+        const sid = String(selectedSrc.source_id || '');
+        const lastSeen = selectedSrc.last_seen || '';
+        let dataCount = 0;
+        try { dataCount = parseInt(selectedSrc.total_records) || 0; } catch (e) { }
+        const online = isOnline(lastSeen);
+        const statusTxt = online ? '🟢 ONLINE' : '⚫ OFFLINE';
+        const seenTxt = formatLastSeen(lastSeen);
+
+        detailHTML = `
+          <div class="detail-grid">
+            <div class="detail-item"><span class="d-label">Computer:</span><span class="d-value">${escapeHtml(computer)}</span></div>
+            <div class="detail-item"><span class="d-label">IP:</span><span class="d-value">${escapeHtml(ip)}</span></div>
+            <div class="detail-item"><span class="d-label">Source:</span><span class="d-value">${escapeHtml(sid)}</span></div>
+            <div class="detail-item"><span class="d-label">Status:</span><span class="d-value">${statusTxt}</span></div>
+            <div class="detail-item"><span class="d-label">Data:</span><span class="d-value">${dataCount}</span></div>
+            <div class="detail-item"><span class="d-label">Last Seen:</span><span class="d-value">${escapeHtml(seenTxt)}</span></div>
+          </div>
+        `;
+      } else {
+        detailHTML = '<div class="empty-msg">No computer selected.</div>';
+      }
+
+      // Monitor table
+      let tableHTML = '';
+      if (monitorRows.length) {
+        tableHTML = `
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>STATUS</th><th>COMPUTER</th><th>IP</th><th>DATA</th><th>LAST SEEN</th><th>SOURCE ID</th>
+              </tr></thead>
+              <tbody>
+                ${monitorRows.map(r => `
+                  <tr class="${r.tag}">
+                    <td>${r.status}</td>
+                    <td>${escapeHtml(r.computer)}</td>
+                    <td>${escapeHtml(r.ip)}</td>
+                    <td>${r.data}</td>
+                    <td>${escapeHtml(r.seen)}</td>
+                    <td>${escapeHtml(r.sid)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } else {
+        tableHTML = '<div class="empty-msg">No computers registered.</div>';
+      }
+
+      const connState = state.connectionState || 'connecting';
+      let connClass = '', connText = '● Connecting…';
+      if (connState === 'ok') { connClass = 'ok'; connText = '● Connected'; }
+      else if (connState === 'error') { connClass = 'err'; connText = '● Error'; }
+
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
+      return `
+        <div class="header">
+          <div class="header-left">
+            <h2>Live Extractor</h2>
+            <p>Admin Dashboard</p>
+          </div>
+          <div class="conn-badge ${connClass}">${connText}</div>
+        </div>
+
+        <div class="project-info">
+          <span>Project: <strong>${escapeHtml(proj.name)}</strong> (${escapeHtml(proj.project_id)})</span>
+          <span class="url">${escapeHtml(proj.url)}</span>
+          <div style="display:flex;gap:4px;flex-wrap:wrap;">
+            <button onclick="event.stopPropagation();editProject(${idx})">✎ Edit</button>
+            <button onclick="event.stopPropagation();removeTab(${idx})">✖ Remove</button>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card"><div class="label">TOTAL</div><div class="value">${total}</div></div>
+          <div class="stat-card online"><div class="label">ONLINE</div><div class="value">${onlineCount}</div></div>
+          <div class="stat-card offline"><div class="label">OFFLINE</div><div class="value">${offlineCount}</div></div>
+          <div class="stat-card data"><div class="label">DATA</div><div class="value">${totalData}</div></div>
+          <div class="stat-card updated"><div class="label">UPDATED</div><div class="value" id="updated-${idx}">${timeStr}</div></div>
+        </div>
+
+        <div class="dropdown-row">
+          <div class="dd-box online">
+            <div class="dd-title">🟢 ONLINE COMPUTERS</div>
+            <select id="online-dd-${idx}" onchange="onOnlineSelected(${idx}, this.value)">
+              <option value="">— select —</option>
+              ${onlineOpts}
+            </select>
+          </div>
+          <div class="dd-box offline">
+            <div class="dd-title">⚫ OFFLINE COMPUTERS</div>
+            <select id="offline-dd-${idx}" onchange="onOfflineSelected(${idx}, this.value)">
+              <option value="">— select —</option>
+              ${offlineOpts}
+            </select>
+          </div>
+        </div>
+
+        <div class="details-box">
+          <div class="dt-title">ℹ SELECTED COMPUTER</div>
+          ${detailHTML}
+        </div>
+
+        <div class="monitor-box">
+          <div class="mt-title">
+            <span>📊 LIVE DATA PER COMPUTER</span>
+            <span style="font-weight:400;color:#7a8894;">auto-refresh 5s</span>
+          </div>
+          ${tableHTML}
+        </div>
+
+        <div class="action-section">
+          <div class="as-title">⬇ LIVE DOWNLOADS (current CSV per PC)</div>
+          <div class="btn-grid">
+            <button class="primary" onclick="downloadSelectedLive(${idx})">Selected</button>
+            <button class="success" onclick="downloadOnlineOnlyLive(${idx})">Online</button>
+            <button class="warn" onclick="downloadOfflineOnlyLive(${idx})">Offline</button>
+            <button class="primary" onclick="downloadAllLive(${idx})">All (Master)</button>
+            <button class="refresh-btn" onclick="manualRefresh(${idx})">🔄</button>
+          </div>
+        </div>
+
+        <div class="action-section">
+          <div class="as-title">📅 DOWNLOAD BY DATE / 📦 ARCHIVE</div>
+          <div class="date-row">
+            <input type="date" id="date-input-${idx}" value="${new Date().toISOString().slice(0, 10)}">
+            <button class="primary" onclick="downloadByDate(${idx})">⬇ By Date (All)</button>
+            <button class="secondary" onclick="downloadSelectedArchive(${idx})">📦 Archive (Sel)</button>
+            <button class="secondary" onclick="downloadAllArchive(${idx})">📦 Archive (All)</button>
+          </div>
+        </div>
+
+        <div class="log-box" id="log-${idx}">
+          <div class="log-line"><span class="ts">--:--:--</span> Ready.</div>
+        </div>
+      `;
+    }
+
+    function buildAddPanelHTML() {
+      return `
+        <div class="add-form">
+          <h2>Add Supabase Project</h2>
+          <p class="sub">Enter your Supabase connection details. The project is saved and a new monitoring tab opens automatically.</p>
+
+          <div class="form-group">
+            <label>Display Name (optional)</label>
+            <input type="text" id="add-name" placeholder="My Project" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Project ID</label>
+            <input type="text" id="add-pid" placeholder="xxxxxxxxxxxxxxxx" autocomplete="off">
+            <div class="hint">Subdomain of your Supabase URL</div>
+          </div>
+          <div class="form-group">
+            <label>Supabase URL</label>
+            <input type="text" id="add-url" placeholder="https://xxxxxxxx.supabase.co" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Anon Key</label>
+            <input type="text" id="add-key" placeholder="eyJhbGciOiJIUzI1NiIs..." autocomplete="off">
+            <div class="hint">Settings → API → anon public key</div>
+          </div>
+
+          <div class="form-actions">
+            <button class="primary" onclick="saveNewProject()">🧪 Test & Save</button>
+            <button class="secondary" onclick="clearAddForm()">Clear</button>
+          </div>
+
+          <div class="add-status" id="add-status"></div>
+
+          <div class="saved-list" id="saved-list">
+            <h3>Saved Projects</h3>
+            ${projects.map((p, i) => `
+              <div class="saved-item">
+                <span class="name">${escapeHtml(p.name)}</span>
+                <span class="pid">${escapeHtml(p.project_id)}</span>
+                <button style="font-size:10px;padding:2px 8px;border:1px solid #c0c8d4;border-radius:4px;background:#fff;cursor:pointer;" onclick="switchTab(${i})">Open</button>
+              </div>
+            `).join('') || '<div class="empty-msg">No projects saved.</div>'}
+          </div>
+        </div>
+      `;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // ============================================================
+    // EVENT ATTACHMENT
+    // ============================================================
+    function attachPanelEvents(idx) {
+      // Nothing extra needed; inline handlers used
+    }
+
+    function attachAddPanelEvents() {
+      // Nothing extra needed
+    }
+
+    // ============================================================
+    // TAB ACTIONS
+    // ============================================================
+    function editProject(idx) {
+      const proj = projects[idx];
+      const newName = prompt('Display Name:', proj.name);
+      if (newName === null) return;
+      const newPid = prompt('Project ID:', proj.project_id);
+      if (newPid === null) return;
+      const newUrl = prompt('Supabase URL:', proj.url);
+      if (newUrl === null) return;
+      const newKey = prompt('Anon Key:', proj.anon_key);
+      if (newKey === null) return;
+
+      proj.name = newName.trim() || newPid.trim();
+      proj.project_id = newPid.trim();
+      proj.url = newUrl.trim().replace(/\/+$/, '');
+      proj.anon_key = newKey.trim();
+
+      saveProjects();
+      // Reset state for this tab
+      delete stateMap[idx];
+      renderTabs();
+      renderPanels();
+      startRefresh(idx);
+      showToast('Project updated.');
+    }
+
+    function removeTab(idx) {
+      if (!confirm(`Remove tab for "${projects[idx].name}"?\n\n(This does NOT delete the project from saved list.)`)) return;
+      stopRefresh(idx);
+      projects.splice(idx, 1);
+      if (projects.length === 0) {
+        // Re-add default
+        projects.push({
+          name: 'Default Project',
+          url: DEFAULT_SUPABASE_URL,
+          anon_key: DEFAULT_SUPABASE_ANON_KEY,
+          project_id: DEFAULT_PROJECT_ID
+        });
+      }
+      saveProjects();
+      // Rebuild state map
+      stateMap = {};
+      activeTabIndex = Math.min(activeTabIndex, projects.length - 1);
+      renderTabs();
+      renderPanels();
+      startRefresh(activeTabIndex);
+      showToast('Tab removed.');
+    }
+
+    // ============================================================
+    // DROPDOWN HANDLERS
+    // ============================================================
+    function onOnlineSelected(idx, label) {
+      const state = stateMap[idx] || {};
+      state.selectedOnline = label;
+      state.selectedOffline = '';
+      stateMap[idx] = state;
+      // Re-render details only (simplest: full re-render)
+      renderPanels();
+    }
+
+    function onOfflineSelected(idx, label) {
+      const state = stateMap[idx] || {};
+      state.selectedOffline = label;
+      state.selectedOnline = '';
+      stateMap[idx] = state;
+      renderPanels();
+    }
+
+    // ============================================================
+    // REFRESH LOGIC
+    // ============================================================
+    function startRefresh(idx) {
+      stopRefresh(idx);
+      refreshTimers[idx] = setInterval(() => {
+        if (idx === activeTabIndex) refreshData(idx);
+      }, REFRESH_INTERVAL);
+      // Initial fetch
+      refreshData(idx);
+    }
+
+    function stopRefresh(idx) {
+      if (refreshTimers[idx]) {
+        clearInterval(refreshTimers[idx]);
+        delete refreshTimers[idx];
+      }
+    }
+
+    function manualRefresh(idx) {
+      refreshData(idx);
+      showToast('Refreshing...');
+    }
+
+    async function refreshData(idx) {
+      if (idx >= projects.length) return;
+      const state = stateMap[idx] || {};
+      if (state.refreshInProgress) return;
+      state.refreshInProgress = true;
+      stateMap[idx] = state;
+
+      const proj = projects[idx];
+      const client = new SupabaseAdmin(proj.url, proj.anon_key);
+
+      try {
+        const sources = await client.getSources();
+        state.sources = sources;
+        state.onlineMap = {};
+        state.offlineMap = {};
+
+        for (const src of sources) {
+          const computer = String(src.computer_name || '');
+          const ip = String(src.local_ip || '');
+          const lastSeen = src.last_seen || '';
+          let dataCount = 0;
+          try { dataCount = parseInt(src.total_records) || 0; } catch (e) { }
+          const label = `${computer}  |  IP: ${ip}  |  Data: ${dataCount}`;
+
+          if (isOnline(lastSeen)) {
+            state.onlineMap[label] = src;
+          } else {
+            state.offlineMap[label] = src;
+          }
+        }
+
+        state.connectionState = 'ok';
+        state.lastRefresh = Date.now();
+        state.refreshInProgress = false;
+        stateMap[idx] = state;
+
+        // Update UI if this tab is active
+        if (idx === activeTabIndex) {
+          updatePanelUI(idx);
+        }
+      } catch (e) {
+        state.connectionState = 'error';
+        state.refreshInProgress = false;
+        stateMap[idx] = state;
+        if (idx === activeTabIndex) {
+          updateConnectionBadge(idx, 'error');
+          addLog(idx, 'Refresh error: ' + e.message, 'err');
+        }
+      }
+    }
+
+    function updatePanelUI(idx) {
+      // Re-render the whole panel for simplicity and consistency
+      const panel = document.getElementById(`panel-${idx}`);
+      if (panel) {
+        panel.innerHTML = buildPanelHTML(projects[idx], idx);
+      }
+    }
+
+    function updateConnectionBadge(idx, state) {
+      const badge = document.querySelector(`#panel-${idx} .conn-badge`);
+      if (badge) {
+        badge.className = 'conn-badge ' + (state === 'ok' ? 'ok' : state === 'error' ? 'err' : '');
+        badge.textContent = state === 'ok' ? '● Connected' : state === 'error' ? '● Error' : '● Connecting…';
+      }
+      const updatedEl = document.getElementById(`updated-${idx}`);
+      if (updatedEl && state === 'ok') {
+        const now = new Date();
+        updatedEl.textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+      }
+    }
+
+    function addLog(idx, msg, level) {
+      const logEl = document.getElementById(`log-${idx}`);
+      if (!logEl) return;
+      const now = new Date();
+      const ts = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+      const line = document.createElement('div');
+      line.className = 'log-line' + (level === 'err' ? ' err' : '');
+      line.innerHTML = `<span class="ts">${ts}</span> ${escapeHtml(msg)}`;
+      logEl.appendChild(line);
+      logEl.scrollTop = logEl.scrollHeight;
+      // Keep only last 50 lines
+      while (logEl.children.length > 50) logEl.removeChild(logEl.firstChild);
+    }
+
+    // ============================================================
+    // DOWNLOAD HANDLERS
+    // ============================================================
+    function getSelectedSource(idx) {
+      const state = stateMap[idx] || {};
+      if (state.selectedOnline && state.onlineMap && state.onlineMap[state.selectedOnline]) {
+        return state.onlineMap[state.selectedOnline];
+      }
+      if (state.selectedOffline && state.offlineMap && state.offlineMap[state.selectedOffline]) {
+        return state.offlineMap[state.selectedOffline];
+      }
+      return null;
+    }
+
+    async function downloadSelectedLive(idx) {
+      const src = getSelectedSource(idx);
+      if (!src) { showToast('Please pick a computer first.'); return; }
+      const proj = projects[idx];
+      const client = new SupabaseAdmin(proj.url, proj.anon_key);
+      const sid = String(src.source_id || '');
+      const computer = String(src.computer_name || 'computer');
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const filename = `LIVE_${safeFilename(computer)}_${stamp}.csv`;
+
+      addLog(idx, `Downloading LIVE ${computer}...`);
+      try {
+        const records = await client.getLiveRecords(sid);
+        const csv = writeCSV(records, 'LIVE');
+        downloadCSV(csv, filename);
+        addLog(idx, `Downloaded ${records.length} records → ${filename}`);
+        showToast(`Downloaded ${records.length} records.`);
+      } catch (e) {
+        addLog(idx, 'Download error: ' + e.message, 'err');
+        showToast('Download error: ' + e.message);
+      }
+    }
+
+    async function downloadOnlineOnlyLive(idx) {
+      const state = stateMap[idx] || {};
+      const sources = state.sources || [];
+      const ids = sources.filter(s => isOnline(s.last_seen)).map(s => String(s.source_id || ''));
+      if (!ids.length) { showToast('No online computers.'); return; }
+      await downloadScopeLive(idx, ids, 'ONLINE_ONLY');
+    }
+
+    async function downloadOfflineOnlyLive(idx) {
+      const state = stateMap[idx] || {};
+      const sources = state.sources || [];
+      const ids = sources.filter(s => !isOnline(s.last_seen)).map(s => String(s.source_id || ''));
+      if (!ids.length) { showToast('No offline computers.'); return; }
+      await downloadScopeLive(idx, ids, 'OFFLINE_ONLY');
+    }
+
+    async function downloadScopeLive(idx, ids, label) {
+      const proj = projects[idx];
+      const client = new SupabaseAdmin(proj.url, proj.anon_key);
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const filename = `${label}_LIVE_${stamp}.csv`;
+      addLog(idx, `Starting ${label} LIVE (${ids.length} PCs)...`);
+      try {
+        const records = await client.getLiveRecordsForSources(ids);
+        const csv = writeCSV(records, 'LIVE');
+        downloadCSV(csv, filename);
+        addLog(idx, `Downloaded ${records.length} records → ${filename}`);
+        showToast(`Downloaded ${records.length} records.`);
+      } catch (e) {
+        addLog(idx, 'Download error: ' + e.message, 'err');
+        showToast('Download error: ' + e.message);
+      }
+    }
+
+    async function downloadAllLive(idx) {
+      const proj = projects[idx];
+      const client = new SupabaseAdmin(proj.url, proj.anon_key);
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const filename = `MASTER_LIVE_ALL_${stamp}.csv`;
+      addLog(idx, 'Starting MASTER LIVE (all computers)...');
+      try {
+        const records = await client.getLiveRecords();
+        const csv = writeCSV(records, 'LIVE');
+        downloadCSV(csv, filename);
+        addLog(idx, `Downloaded ${records.length} records → ${filename}`);
+        showToast(`Downloaded ${records.length} records.`);
+      } catch (e) {
+        addLog(idx, 'Download error: ' + e.message, 'err');
+        showToast('Download error: ' + e.message);
+      }
+    }
+
+    async function downloadByDate(idx) {
+      const dateInput = document.getElementById(`date-input-${idx}`);
+      const dateStr = dateInput ? dateInput.value : '';
+      if (!dateStr) { showToast('Please pick a date.'); return; }
+      const parts = dateStr.split('-');
+      const y = parseInt(parts[0]), m = parseInt(parts[1]), d = parseInt(parts[2]);
+      const startISO = dayStartISO(y, m, d);
+      const endISO = dayEndISO(y, m, d);
+
+      const proj = projects[idx];
+      const client = new SupabaseAdmin(proj.url, proj.anon_key);
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const filename = `ALL_DATED_${dateStr}_${stamp}.csv`;
+
+      addLog(idx, `Downloading all rows for ${dateStr}...`);
+      try {
+        const records = await client.getArchiveRecordsByDate(startISO, endISO);
+        const columns = ['source_id', 'computer_name', 'local_ip', 'group_name',
+          'group_email', 'account', 'row_key', 'snapshot_at'];
+        let csv = columns.join(',') + '\n';
+        for (const rec of records) {
+          csv += columns.map(c => {
+            const v = String(rec[c] == null ? '' : rec[c]);
+            return v.includes(',') || v.includes('"') || v.includes('\n')
+              ? '"' + v.replace(/"/g, '""') + '"' : v;
+          }).join(',') + '\n';
+        }
+        downloadCSV(csv, filename);
+        addLog(idx, `Downloaded ${records.length} records → ${filename}`);
+        showToast(`Downloaded ${records.length} records.`);
+      } catch (e) {
+        addLog(idx, 'Download error: ' + e.message, 'err');
+        showToast('Download error: ' + e.message);
+      }
+    }
+
+    async function downloadSelectedArchive(idx) {
+      const src = getSelectedSource(idx);
+      if (!src) { showToast('Please pick a computer first.'); return; }
+      const proj = projects[idx];
+      const client = new SupabaseAdmin(proj.url, proj.anon_key);
+      const sid = String(src.source_id || '');
+      const computer = String(src.computer_name || 'computer');
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const filename = `ARCHIVE_${safeFilename(computer)}_${stamp}.csv`;
+
+      addLog(idx, `Downloading ARCHIVE ${computer}...`);
+      try {
+        const records = await client.getArchiveRecords(sid);
+        const csv = writeCSV(records, 'ARCHIVE');
+        downloadCSV(csv, filename);
+        addLog(idx, `Downloaded ${records.length} records → ${filename}`);
+        showToast(`Downloaded ${records.length} records.`);
+      } catch (e) {
+        addLog(idx, 'Download error: ' + e.message, 'err');
+        showToast('Download error: ' + e.message);
+      }
+    }
+
+    async function downloadAllArchive(idx) {
+      const proj = projects[idx];
+      const client = new SupabaseAdmin(proj.url, proj.anon_key);
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const filename = `MASTER_ARCHIVE_ALL_${stamp}.csv`;
+      addLog(idx, 'Starting MASTER ARCHIVE (all computers)...');
+      try {
+        const records = await client.getArchiveRecords();
+        const csv = writeCSV(records, 'ARCHIVE');
+        downloadCSV(csv, filename);
+        addLog(idx, `Downloaded ${records.length} records → ${filename}`);
+        showToast(`Downloaded ${records.length} records.`);
+      } catch (e) {
+        addLog(idx, 'Download error: ' + e.message, 'err');
+        showToast('Download error: ' + e.message);
+      }
+    }
+
+    // ============================================================
+    // ADD PROJECT
+    // ============================================================
+    function clearAddForm() {
+      document.getElementById('add-name').value = '';
+      document.getElementById('add-pid').value = '';
+      document.getElementById('add-url').value = '';
+      document.getElementById('add-key').value = '';
+      document.getElementById('add-status').textContent = '';
+    }
+
+    async function saveNewProject() {
+      const name = document.getElementById('add-name').value.trim();
+      const pid = document.getElementById('add-pid').value.trim();
+      const urlRaw = document.getElementById('add-url').value.trim();
+      const key = document.getElementById('add-key').value.trim();
+      const statusEl = document.getElementById('add-status');
+
+      if (!pid) { statusEl.textContent = '❌ Project ID is required.'; return; }
+      if (!urlRaw) { statusEl.textContent = '❌ Supabase URL is required.'; return; }
+      if (!key) { statusEl.textContent = '❌ Anon Key is required.'; return; }
+
+      let url = urlRaw;
+      if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+      url = url.replace(/\/+$/, '');
+
+      // Check duplicates
+      for (const p of projects) {
+        if (p.project_id === pid || p.url === url) {
+          if (!confirm('A project with the same ID or URL already exists.\nAdd anyway?')) return;
+          break;
+        }
+      }
+
+      const displayName = name || pid;
+      const project = { name: displayName, url, anon_key: key, project_id: pid };
+
+      statusEl.textContent = '⏳ Testing connection…';
+
+      // Test connection
+      try {
+        const headers = {
+          'apikey': key,
+          'Authorization': `Bearer ${key}`,
+          'Content-Type': 'application/json'
+        };
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+        const resp = await fetch(`${url}/rest/v1/extractor_sources?select=source_id&limit=1`, {
+          headers, signal: controller.signal
+        });
+        clearTimeout(timer);
+        if (!resp.ok) {
+          const text = await resp.text();
+          throw new Error(`HTTP ${resp.status}: ${text.slice(0, 200)}`);
+        }
+        statusEl.textContent = '✅ Connection OK. Saving…';
+      } catch (e) {
+        statusEl.textContent = `❌ Connection failed: ${e.message}`;
+        if (!confirm(`Could not connect to the project:\n\n${e.message}\n\nSave anyway?`)) return;
+      }
+
+      projects.push(project);
+      saveProjects();
+
+      // Open new tab
+      activeTabIndex = projects.length - 1;
+      stateMap = {}; // reset all state
+      renderTabs();
+      renderPanels();
+      startRefresh(activeTabIndex);
+
+      statusEl.textContent = `✅ Project '${displayName}' saved and monitoring started.`;
+      clearAddForm();
+      showToast(`Project "${displayName}" added.`);
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    function init() {
+      projects = loadProjects();
+      if (!projects.length) {
+        projects.push({
+          name: 'Default Project',
+          url: DEFAULT_SUPABASE_URL,
+          anon_key: DEFAULT_SUPABASE_ANON_KEY,
+          project_id: DEFAULT_PROJECT_ID
+        });
+      }
+      activeTabIndex = 0;
+      renderTabs();
+      renderPanels();
+      startRefresh(0);
+    }
+
+    // Boot
+    document.addEventListener('DOMContentLoaded', init);
+
+    // Global error handler
+    window.onerror = function (msg, url, line) {
+      console.error('Global error:', msg, url, line);
+    };
+  </script>
+</body>
+</html>
