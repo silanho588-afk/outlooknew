@@ -1,1649 +1,1851 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>Lunar Admin — Premium Console</title>
-  <!-- Fonts & Icons -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    /* ---------- RESET & GLOBAL ---------- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    :root {
-      /* Apple-like light theme */
-      --bg-primary: #f5f5f7;
-      --bg-secondary: #ffffff;
-      --bg-card: #ffffff;
-      --bg-elevated: #f8f9fc;
-      --bg-input: #f2f2f7;
-      --border-light: #e5e5ea;
-      --border-medium: #d1d1d6;
-      --text-primary: #1c1c1e;
-      --text-secondary: #3a3a3c;
-      --text-tertiary: #8e8e93;
-      --text-muted: #aeaeb2;
-      --accent-blue: #007aff;
-      --accent-blue-hover: #0066d6;
-      --accent-green: #34c759;
-      --accent-green-hover: #2aa84a;
-      --accent-red: #ff3b30;
-      --accent-red-hover: #d92b22;
-      --accent-orange: #ff9500;
-      --accent-orange-hover: #e08600;
-      --accent-purple: #af52de;
-      --accent-purple-hover: #9a3ec7;
-      --accent-cyan: #00b8d4;
-      --accent-cyan-hover: #00a0b8;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
-      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.08);
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 18px;
-      --radius-xl: 24px;
-      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-mono: 'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
-    }
-
-    html {
-      font-size: 16px;
-      -webkit-text-size-adjust: 100%;
-    }
-
-    body {
-      font-family: var(--font-main);
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.45;
-      min-height: 100vh;
-      padding: 0;
-      margin: 0;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow-x: hidden;
-      padding-bottom: env(safe-area-inset-bottom, 0);
-    }
-
-    /* Samsung Z Fold 4 specific tweaks */
-    @media (max-width: 720px) {
-      html { font-size: 14px; }
-    }
-    @media (max-width: 480px) {
-      html { font-size: 13px; }
-    }
-
-    /* ---------- APP SHELL ---------- */
-    .app-shell {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 16px;
-      padding-top: env(safe-area-inset-top, 16px);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* ---------- TOP BAR ---------- */
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 0;
-      flex-wrap: wrap;
-      gap: 12px;
-      border-bottom: 1px solid var(--border-light);
-      margin-bottom: 20px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-icon {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, #1c1c1e, #3a3a3c);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 18px;
-      font-weight: 700;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .brand-text {
-      font-weight: 700;
-      font-size: 1.15rem;
-      letter-spacing: -0.02em;
-    }
-
-    .brand-sub {
-      font-size: 0.7rem;
-      color: var(--text-tertiary);
-      font-weight: 500;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
-
-    .top-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 9px 16px;
-      border-radius: 10px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      box-shadow: var(--shadow-sm);
-      white-space: nowrap;
-      font-family: var(--font-main);
-      letter-spacing: -0.01em;
-    }
-
-    .btn:active { transform: scale(0.97); }
-    .btn i { font-size: 0.9em; }
-
-    .btn-primary { background: var(--accent-blue); color: #fff; }
-    .btn-primary:hover { background: var(--accent-blue-hover); }
-
-    .btn-success { background: var(--accent-green); color: #fff; }
-    .btn-success:hover { background: var(--accent-green-hover); }
-
-    .btn-danger { background: var(--accent-red); color: #fff; }
-    .btn-danger:hover { background: var(--accent-red-hover); }
-
-    .btn-warning { background: var(--accent-orange); color: #fff; }
-    .btn-warning:hover { background: var(--accent-orange-hover); }
-
-    .btn-purple { background: var(--accent-purple); color: #fff; }
-    .btn-purple:hover { background: var(--accent-purple-hover); }
-
-    .btn-cyan { background: var(--accent-cyan); color: #fff; }
-    .btn-cyan:hover { background: var(--accent-cyan-hover); }
-
-    .btn-outline {
-      background: transparent;
-      border: 1.5px solid var(--border-medium);
-      box-shadow: none;
-    }
-    .btn-outline:hover { background: var(--bg-input); }
-
-    .btn-sm {
-      padding: 6px 12px;
-      font-size: 0.75rem;
-      border-radius: 8px;
-    }
-
-    .btn-icon {
-      width: 36px;
-      height: 36px;
-      padding: 0;
-      border-radius: 10px;
-      font-size: 1rem;
-    }
-
-    /* ---------- TABS ---------- */
-    .tabs-container {
-      display: flex;
-      gap: 4px;
-      background: var(--bg-input);
-      padding: 4px;
-      border-radius: 14px;
-      margin-bottom: 20px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    .tabs-container::-webkit-scrollbar { display: none; }
-
-    .tab-btn {
-      flex: 1;
-      min-width: fit-content;
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      border: none;
-      cursor: pointer;
-      background: transparent;
-      color: var(--text-secondary);
-      transition: all 0.2s ease;
-      white-space: nowrap;
-      font-family: var(--font-main);
-      letter-spacing: -0.01em;
-    }
-
-    .tab-btn.active {
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .tab-btn i { margin-right: 6px; }
-
-    /* ---------- PANELS / TAB CONTENT ---------- */
-    .tab-content {
-      display: none;
-      flex: 1;
-      animation: fadeIn 0.25s ease;
-    }
-    .tab-content.active { display: block; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ---------- CARDS ---------- */
-    .card {
-      background: var(--bg-card);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
-      padding: 20px;
-      margin-bottom: 16px;
-      border: 1px solid var(--border-light);
-      transition: box-shadow 0.2s ease;
-    }
-
-    .card:hover { box-shadow: var(--shadow-lg); }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .card-title {
-      font-size: 1rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .card-title i {
-      color: var(--accent-blue);
-      font-size: 1.1rem;
-    }
-
-    .card-subtitle {
-      font-size: 0.75rem;
-      color: var(--text-tertiary);
-      font-weight: 500;
-    }
-
-    /* ---------- GRID ---------- */
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
-
-    @media (max-width: 720px) {
-      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-    }
-
-    /* ---------- STAT CARDS ---------- */
-    .stat-card {
-      background: var(--bg-elevated);
-      border-radius: var(--radius-md);
-      padding: 14px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      border: 1px solid var(--border-light);
-    }
-
-    .stat-label {
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--text-tertiary);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .stat-value {
-      font-size: 1.4rem;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-    }
-
-    .stat-value.green { color: var(--accent-green); }
-    .stat-value.red { color: var(--accent-red); }
-    .stat-value.blue { color: var(--accent-blue); }
-    .stat-value.orange { color: var(--accent-orange); }
-
-    /* ---------- LISTS ---------- */
-    .list-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border-light);
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .list-item:last-child { border-bottom: none; }
-
-    .list-item-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .list-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: var(--bg-input);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-      flex-shrink: 0;
-    }
-
-    .list-info {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .list-name {
-      font-weight: 600;
-      font-size: 0.85rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .list-meta {
-      font-size: 0.72rem;
-      color: var(--text-tertiary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .list-actions {
-      display: flex;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    /* ---------- BADGE ---------- */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 10px;
-      border-radius: 100px;
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-    }
-
-    .badge-green { background: #e8f8ed; color: #1e7e34; }
-    .badge-red { background: #fde8e8; color: #c0392b; }
-    .badge-orange { background: #fef3e2; color: #b86e00; }
-    .badge-blue { background: #e5f0ff; color: #0055cc; }
-    .badge-gray { background: #f0f0f5; color: #6e6e73; }
-
-    /* ---------- FORM ---------- */
-    .form-group {
-      margin-bottom: 14px;
-    }
-
-    .form-label {
-      display: block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 5px;
-      letter-spacing: -0.01em;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 11px 14px;
-      border-radius: var(--radius-sm);
-      border: 1.5px solid var(--border-light);
-      background: var(--bg-input);
-      font-size: 0.85rem;
-      font-family: var(--font-main);
-      color: var(--text-primary);
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      outline: none;
-      -webkit-appearance: none;
-      appearance: none;
-    }
-
-    .form-input:focus {
-      border-color: var(--accent-blue);
-      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.12);
-      background: var(--bg-secondary);
-    }
-
-    .form-input::placeholder { color: var(--text-muted); }
-
-    select.form-input {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238e8e93' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      padding-right: 36px;
-    }
-
-    /* ---------- TOGGLE ---------- */
-    .toggle {
-      position: relative;
-      width: 44px;
-      height: 26px;
-      border-radius: 100px;
-      background: var(--border-medium);
-      cursor: pointer;
-      transition: background 0.2s ease;
-      flex-shrink: 0;
-      border: none;
-      padding: 0;
-    }
-
-    .toggle.active { background: var(--accent-green); }
-
-    .toggle::after {
-      content: '';
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-      transition: transform 0.2s ease;
-    }
-
-    .toggle.active::after { transform: translateX(18px); }
-
-    /* ---------- LOG ---------- */
-    .log-box {
-      background: #1c1c1e;
-      border-radius: var(--radius-md);
-      padding: 14px;
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      line-height: 1.6;
-      color: #e5e5ea;
-      max-height: 220px;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .log-line { white-space: pre-wrap; word-break: break-all; }
-    .log-line .time { color: #8e8e93; }
-    .log-line .success { color: #34c759; }
-    .log-line .error { color: #ff3b30; }
-    .log-line .warning { color: #ff9500; }
-
-    /* ---------- DEVICE CARD (Lunar) ---------- */
-    .device-card {
-      background: var(--bg-secondary);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-light);
-      margin-bottom: 10px;
-      overflow: hidden;
-      transition: box-shadow 0.2s ease;
-    }
-
-    .device-card:hover { box-shadow: var(--shadow-md); }
-
-    .device-header {
-      display: flex;
-      align-items: center;
-      padding: 12px 14px;
-      gap: 10px;
-      flex-wrap: wrap;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .device-expand {
-      width: 28px;
-      height: 28px;
-      border-radius: 8px;
-      background: var(--bg-input);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      color: var(--text-tertiary);
-      transition: transform 0.2s ease;
-      flex-shrink: 0;
-      border: none;
-      cursor: pointer;
-    }
-
-    .device-expand.open { transform: rotate(180deg); }
-
-    .device-name {
-      font-weight: 600;
-      font-size: 0.85rem;
-      flex: 1;
-      min-width: 80px;
-    }
-
-    .device-body {
-      padding: 0 14px 14px;
-      display: none;
-    }
-
-    .device-body.open { display: block; }
-
-    .device-detail-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      font-size: 0.78rem;
-      border-bottom: 1px solid var(--border-light);
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-
-    .device-detail-row:last-child { border-bottom: none; }
-
-    .device-detail-label { color: var(--text-tertiary); font-weight: 500; }
-    .device-detail-value { font-weight: 600; font-family: var(--font-mono); font-size: 0.75rem; }
-
-    /* ---------- MODAL ---------- */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .modal-overlay.open { display: flex; }
-
-    .modal {
-      background: var(--bg-secondary);
-      border-radius: var(--radius-xl);
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
-      padding: 28px;
-      max-width: 520px;
-      width: 100%;
-      max-height: 85vh;
-      overflow-y: auto;
-      animation: modalIn 0.25s ease;
-    }
-
-    @keyframes modalIn {
-      from { opacity: 0; transform: scale(0.96) translateY(10px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .modal-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-      letter-spacing: -0.02em;
-    }
-
-    .modal-desc {
-      font-size: 0.8rem;
-      color: var(--text-tertiary);
-      margin-bottom: 20px;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
-
-    /* ---------- EMPTY STATE ---------- */
-    .empty-state {
-      text-align: center;
-      padding: 48px 20px;
-      color: var(--text-tertiary);
-    }
-
-    .empty-state i {
-      font-size: 2.8rem;
-      margin-bottom: 12px;
-      opacity: 0.35;
-      display: block;
-    }
-
-    .empty-state p {
-      font-size: 0.85rem;
-      line-height: 1.6;
-    }
-
-    /* ---------- SCROLLBAR ---------- */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border-medium); border-radius: 100px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-
-    /* ---------- RESPONSIVE ---------- */
-    @media (max-width: 720px) {
-      .app-shell { padding: 0 12px; }
-      .top-bar { padding: 10px 0; }
-      .brand-text { font-size: 1rem; }
-      .brand-icon { width: 34px; height: 34px; font-size: 16px; }
-      .card { padding: 16px; border-radius: var(--radius-md); }
-      .modal { padding: 20px; border-radius: var(--radius-lg); }
-      .stat-value { font-size: 1.2rem; }
-      .btn { padding: 8px 14px; font-size: 0.78rem; }
-      .btn-sm { padding: 5px 10px; font-size: 0.7rem; }
-      .tab-btn { padding: 8px 14px; font-size: 0.78rem; }
-    }
-
-    @media (max-width: 480px) {
-      .app-shell { padding: 0 8px; }
-      .card { padding: 14px; }
-      .top-actions { width: 100%; }
-      .top-actions .btn { flex: 1; justify-content: center; }
-      .device-actions { width: 100%; margin-top: 6px; }
-      .device-actions .btn { flex: 1; }
-    }
-
-    /* Samsung Z Fold 4 unfolded (approx 720x1768) */
-    @media (min-width: 700px) and (max-width: 760px) {
-      .app-shell { max-width: 740px; }
-    }
-
-    /* Utility */
-    .flex { display: flex; }
-    .flex-col { flex-direction: column; }
-    .items-center { align-items: center; }
-    .justify-between { justify-content: space-between; }
-    .gap-8 { gap: 8px; }
-    .gap-12 { gap: 12px; }
-    .mt-8 { margin-top: 8px; }
-    .mt-12 { margin-top: 12px; }
-    .mb-8 { margin-bottom: 8px; }
-    .mb-12 { margin-bottom: 12px; }
-    .text-center { text-align: center; }
-    .hidden { display: none !important; }
-    .w-full { width: 100%; }
-    .flex-wrap { flex-wrap: wrap; }
-
-    .divider {
-      height: 1px;
-      background: var(--border-light);
-      margin: 12px 0;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#0a0c10" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="description" content="Lunar Admin + Live Extractor Console" />
+<title>Lunar Admin Console</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🌙%3C/text%3E%3C/svg%3E" />
+<style>
+/* ============================================================
+   THEME TOKENS
+   ============================================================ */
+:root{
+  --bg:#0a0c10; --bg2:#12151c; --card:#181c25; --card2:#1e2430;
+  --header:#0d1017; --input:#0b0e14; --log:#07090d;
+  --border:#232a36; --border2:#2f3a4a;
+  --txt:#f1f5f9; --txt2:#94a3b8; --muted:#64748b;
+  --blue:#3b82f6; --blue-h:#2563eb;
+  --green:#22c55e; --green-h:#16a34a;
+  --red:#ef4444; --red-h:#dc2626;
+  --orange:#f59e0b; --orange-h:#d97706;
+  --purple:#8b5cf6; --purple-h:#7c3aed;
+  --cyan:#06b6d4; --cyan-h:#0891b2;
+  --online:#4ade80; --offline:#f87171;
+  --yellow:#facc15; --wipe:#7f1d1d; --wipe-h:#991b1b;
+  --radius:14px; --radius-sm:10px; --radius-lg:20px;
+  --shadow:0 4px 20px rgba(0,0,0,.45);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.55);
+  --safe-t:env(safe-area-inset-top,0px);
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --safe-l:env(safe-area-inset-left,0px);
+  --safe-r:env(safe-area-inset-right,0px);
+  --tap:44px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+}
+[data-theme="light"]{
+  --bg:#f4f6fa; --bg2:#eef1f6; --card:#ffffff; --card2:#f8fafc;
+  --header:#ffffff; --input:#f1f5f9; --log:#f8fafc;
+  --border:#d8dee8; --border2:#c3ccd9;
+  --txt:#0f172a; --txt2:#475569; --muted:#94a3b8;
+  --shadow:0 4px 20px rgba(15,23,42,.08);
+  --shadow-lg:0 12px 40px rgba(15,23,42,.14);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%;overflow:hidden}
+body{
+  font-family:var(--font); background:var(--bg); color:var(--txt);
+  overscroll-behavior:none; -webkit-font-smoothing:antialiased;
+  user-select:none; -webkit-user-select:none;
+}
+input,textarea{user-select:text;-webkit-user-select:text}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+
+/* ============================================================
+   APP SHELL
+   ============================================================ */
+#app{
+  display:flex; flex-direction:column;
+  height:100vh; height:100dvh;
+  padding-top:var(--safe-t); padding-bottom:var(--safe-b);
+  padding-left:var(--safe-l); padding-right:var(--safe-r);
+}
+.appbar{
+  display:flex; align-items:center; gap:10px;
+  background:var(--header); border-bottom:1px solid var(--border);
+  padding:8px 12px; min-height:56px; flex-shrink:0;
+  box-shadow:0 1px 3px rgba(0,0,0,.3); z-index:50;
+}
+.appbar .brand{display:flex;flex-direction:column;line-height:1.1}
+.appbar .brand b{font-size:15px;letter-spacing:.3px}
+.appbar .brand small{font-size:9px;color:var(--muted);letter-spacing:.5px}
+.appbar .spacer{flex:1}
+.iconbtn{
+  min-width:var(--tap);min-height:var(--tap);
+  display:inline-flex;align-items:center;justify-content:center;
+  border-radius:12px;background:transparent;color:var(--txt2);
+  font-size:18px;transition:background .15s,color .15s;
+}
+.iconbtn:hover{background:var(--card);color:var(--txt)}
+.iconbtn:active{transform:scale(.94)}
+.iconbtn.accent{background:var(--purple);color:#fff}
+.iconbtn.accent:hover{background:var(--purple-h)}
+
+/* ============================================================
+   TAB BAR (bottom on mobile, top tabs on desktop)
+   ============================================================ */
+.tabs{
+  display:flex; gap:4px; background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  padding:6px 8px; overflow-x:auto; flex-shrink:0;
+  scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto; padding:9px 16px; border-radius:10px;
+  font-size:12px; font-weight:600; color:var(--txt2);
+  background:transparent; white-space:nowrap;
+  transition:background .15s,color .15s;
+  display:flex;align-items:center;gap:6px;
+}
+.tab:hover{background:var(--card);color:var(--txt)}
+.tab.active{background:var(--blue);color:#fff}
+.tab .badge{
+  background:rgba(255,255,255,.25); border-radius:8px;
+  padding:1px 6px; font-size:10px;
+}
+.tab.active .badge{background:rgba(0,0,0,.25)}
+
+/* ============================================================
+   CONTENT AREA
+   ============================================================ */
+.content{flex:1;overflow-y:auto;overflow-x:hidden;padding:12px;position:relative}
+.panel{display:none}
+.panel.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ============================================================
+   CARDS & SECTIONS
+   ============================================================ */
+.card{
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--radius); padding:14px; margin-bottom:12px;
+  box-shadow:var(--shadow);
+}
+.card.flat{box-shadow:none}
+.card-title{
+  display:flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;color:var(--txt2);
+  text-transform:uppercase;letter-spacing:.6px;
+  margin:-4px 0 12px;
+}
+.card-title .ico{font-size:14px}
+.grid{display:grid;gap:10px}
+.grid-2{grid-template-columns:repeat(2,1fr)}
+.grid-3{grid-template-columns:repeat(3,1fr)}
+.grid-4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:720px){
+  .grid-3{grid-template-columns:repeat(2,1fr)}
+  .grid-4{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:420px){
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+}
+
+/* ============================================================
+   STAT PILLS
+   ============================================================ */
+.stat{
+  background:var(--card2); border:1px solid var(--border);
+  border-radius:var(--radius-sm); padding:10px 12px;
+  display:flex;flex-direction:column;gap:2px;
+}
+.stat .lbl{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.4px}
+.stat .val{font-size:20px;font-weight:700;color:var(--txt)}
+.stat.g .val{color:var(--green)}
+.stat.r .val{color:var(--red)}
+.stat.o .val{color:var(--orange)}
+.stat.b .val{color:var(--blue)}
+.stat.p .val{color:var(--purple)}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  min-height:var(--tap); padding:10px 16px; border-radius:12px;
+  font-size:12px; font-weight:700; letter-spacing:.3px;
+  color:#fff; background:var(--card2);
+  transition:transform .1s, background .15s, box-shadow .15s;
+  border:1px solid transparent;
+}
+.btn:active{transform:scale(.96)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.blue{background:var(--blue)} .btn.blue:hover{background:var(--blue-h)}
+.btn.green{background:var(--green)} .btn.green:hover{background:var(--green-h)}
+.btn.red{background:var(--red)} .btn.red:hover{background:var(--red-h)}
+.btn.orange{background:var(--orange)} .btn.orange:hover{background:var(--orange-h)}
+.btn.purple{background:var(--purple)} .btn.purple:hover{background:var(--purple-h)}
+.btn.cyan{background:var(--cyan)} .btn.cyan:hover{background:var(--cyan-h)}
+.btn.ghost{background:transparent;border-color:var(--border2);color:var(--txt2)}
+.btn.ghost:hover{background:var(--card2);color:var(--txt)}
+.btn.wipe{background:var(--wipe)} .btn.wipe:hover{background:var(--wipe-h)}
+.btn.sm{min-height:36px;padding:7px 12px;font-size:11px;border-radius:10px}
+.btn.xs{min-height:30px;padding:5px 9px;font-size:10px;border-radius:8px;gap:4px}
+.btn.full{width:100%}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.btn-row>.btn{flex:1;min-width:0}
+
+/* ============================================================
+   FORM INPUTS
+   ============================================================ */
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.field label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase}
+.field input,.field select,.field textarea{
+  background:var(--input); border:1px solid var(--border);
+  border-radius:10px; padding:11px 12px; color:var(--txt);
+  font-size:13px; font-family:var(--font); outline:none;
+  transition:border-color .15s, box-shadow .15s;
+  width:100%; min-height:var(--tap);
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--blue); box-shadow:0 0 0 3px rgba(59,130,246,.18);
+}
+.field textarea{min-height:80px;resize:vertical;font-family:var(--mono);font-size:12px}
+.field .hint{font-size:10px;color:var(--muted);margin-top:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.row>*{flex:1;min-width:120px}
+.check{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 10px;border-radius:10px;background:var(--card2);
+  border:1px solid var(--border); font-size:12px;cursor:pointer;
+  min-height:38px;
+}
+.check input{width:18px;height:18px;accent-color:var(--blue);cursor:pointer}
+.check:hover{border-color:var(--border2)}
+
+/* ============================================================
+   LIST ROWS (devices, licenses, files)
+   ============================================================ */
+.list{display:flex;flex-direction:column;gap:8px}
+.item{
+  background:var(--card2); border:1px solid var(--border);
+  border-radius:var(--radius-sm); overflow:hidden;
+}
+.item-head{
+  display:flex;align-items:center;gap:8px;padding:10px 12px;
+  cursor:pointer;user-select:none;
+}
+.item-head:hover{background:rgba(255,255,255,.03)}
+.item-head .expand{
+  width:24px;height:24px;display:flex;align-items:center;justify-content:center;
+  color:var(--txt2);font-size:10px;flex-shrink:0;transition:transform .2s;
+}
+.item.open .item-head .expand{transform:rotate(180deg)}
+.item-head .title{font-size:13px;font-weight:600;flex:1;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item-head .sub{font-size:11px;color:var(--muted)}
+.item-body{padding:0 12px 12px;display:none}
+.item.open .item-body{display:block;animation:slideDown .18s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot.on{background:var(--online);box-shadow:0 0 0 3px rgba(74,222,128,.18)}
+.dot.off{background:var(--offline)}
+.dot.warn{background:var(--yellow);box-shadow:0 0 0 3px rgba(250,204,21,.18)}
+
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:11px;margin-top:6px}
+.kv .k{color:var(--muted);font-weight:600}
+.kv .v{color:var(--txt);word-break:break-all;font-family:var(--mono);font-size:11px}
+
+/* ============================================================
+   LOG CONSOLE
+   ============================================================ */
+.console{
+  background:var(--log); border:1px solid var(--border);
+  border-radius:var(--radius-sm); padding:10px;
+  font-family:var(--mono); font-size:11px; line-height:1.55;
+  color:var(--txt2); height:200px; overflow-y:auto;
+  white-space:pre-wrap; word-break:break-word;
+}
+.console .ln{display:block}
+.console .t{color:var(--muted)}
+.console .INFO{color:var(--txt2)}
+.console .SUCCESS{color:var(--online)}
+.console .ERROR{color:var(--offline)}
+.console .WARNING{color:var(--yellow)}
+.console .HIGHLIGHT{color:var(--blue);font-weight:600}
+
+/* ============================================================
+   MODAL / DIALOG
+   ============================================================ */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,.7);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;
+  padding:16px;z-index:1000;
+  padding-top:calc(16px + var(--safe-t));
+  padding-bottom:calc(16px + var(--safe-b));
+}
+.modal-bg.show{display:flex;animation:fade .15s ease}
+.modal{
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--radius-lg); width:100%; max-width:520px;
+  max-height:calc(100vh - 60px); max-height:calc(100dvh - 60px);
+  display:flex;flex-direction:column;box-shadow:var(--shadow-lg);
+  overflow:hidden;
+}
+.modal-head{
+  padding:16px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.modal-head h3{margin:0;font-size:16px;font-weight:700;flex:1}
+.modal-body{padding:16px 18px;overflow-y:auto;flex:1}
+.modal-foot{
+  padding:12px 18px;border-top:1px solid var(--border);
+  display:flex;gap:8px;justify-content:flex-end;flex-shrink:0;
+  background:var(--card2);
+}
+@media (max-width:520px){
+  .modal-foot{flex-direction:column-reverse}
+  .modal-foot>.btn{width:100%}
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+#toasts{
+  position:fixed;bottom:calc(16px + var(--safe-b));left:50%;
+  transform:translateX(-50%);z-index:2000;
+  display:flex;flex-direction:column;gap:8px;align-items:center;
+  pointer-events:none;width:calc(100% - 24px);max-width:420px;
+}
+.toast{
+  background:var(--card); border:1px solid var(--border);
+  border-radius:12px; padding:11px 14px; font-size:12px;
+  box-shadow:var(--shadow-lg); color:var(--txt);
+  display:flex;align-items:center;gap:8px;
+  animation:toastIn .25s ease; max-width:100%;
+}
+.toast.ok{border-color:var(--green)} .toast.ok .i{color:var(--green)}
+.toast.err{border-color:var(--red)} .toast.err .i{color:var(--red)}
+.toast.warn{border-color:var(--orange)} .toast.warn .i{color:var(--orange)}
+.toast .i{font-size:16px}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+/* ============================================================
+   LOADER
+   ============================================================ */
+.spinner{
+  width:16px;height:16px;border:2px solid var(--border2);
+  border-top-color:var(--blue);border-radius:50%;
+  animation:spin .7s linear infinite;display:inline-block;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============================================================
+   SCREEN VIEWER
+   ============================================================ */
+.screen-view{
+  background:#000;border-radius:var(--radius-sm);
+  overflow:hidden;position:relative;width:100%;
+  aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;
+}
+.screen-view img{max-width:100%;max-height:100%;display:block;user-select:none;-webkit-user-drag:none}
+.screen-view .ph{color:var(--muted);font-size:12px}
+
+/* ============================================================
+   Z FOLD / TABLET ADAPTIVE
+   ============================================================ */
+@media (min-width:900px){
+  .content{padding:20px 24px}
+  .appbar{min-height:64px;padding:10px 20px}
+  .appbar .brand b{font-size:17px}
+  .card{padding:18px}
+}
+@media (min-width:1200px){
+  .content{max-width:1400px;margin:0 auto;width:100%}
+}
+/* Samsung Z Fold closed (narrow) */
+@media (max-width:360px){
+  .btn{padding:9px 12px;font-size:11px}
+  .card{padding:12px;border-radius:12px}
+  .stat .val{font-size:17px}
+}
+/* Samsung Z Fold open (wide short) */
+@media (min-aspect-ratio:2/1) and (max-height:700px){
+  .console{height:140px}
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.empty{
+  text-align:center;padding:40px 20px;color:var(--muted);
+  font-size:13px;line-height:1.6;
+}
+.empty .ico{font-size:44px;display:block;margin-bottom:10px;opacity:.5}
+
+/* ============================================================
+   PULL-TO-REFRESH HINT
+   ============================================================ */
+.refresh-hint{
+  text-align:center;font-size:10px;color:var(--muted);
+  padding:4px;letter-spacing:.5px;
+}
+</style>
 </head>
 <body>
-  <div class="app-shell">
-    <!-- Top Bar -->
-    <header class="top-bar">
-      <div class="brand">
-        <div class="brand-icon">L</div>
-        <div>
-          <div class="brand-text">Lunar Admin</div>
-          <div class="brand-sub">Multi‑Project Console</div>
-        </div>
-      </div>
-      <div class="top-actions">
-        <button class="btn btn-outline btn-sm" id="saveProjectsBtn"><i class="fas fa-save"></i> Save</button>
-        <button class="btn btn-primary btn-sm" id="openLunarBtn"><i class="fas fa-moon"></i> Lunar Panel</button>
-        <button class="btn btn-outline btn-sm" id="addProjectBtn"><i class="fas fa-plus"></i> Add DB</button>
-      </div>
-    </header>
+<div id="app">
 
-    <!-- Tabs -->
-    <div class="tabs-container" id="mainTabs">
-      <button class="tab-btn active" data-tab="tab-pcs"><i class="fas fa-desktop"></i> Online PCs</button>
-      <button class="tab-btn" data-tab="tab-live"><i class="fas fa-chart-bar"></i> Live Extractor</button>
-      <button class="tab-btn" data-tab="tab-lunar"><i class="fas fa-moon"></i> Lunar Panel</button>
-      <button class="tab-btn" data-tab="tab-add"><i class="fas fa-database"></i> Add Project</button>
+  <!-- ===== APP BAR ===== -->
+  <div class="appbar">
+    <button class="iconbtn" id="menuBtn" title="Menu">☰</button>
+    <div class="brand">
+      <b id="appTitle">🌙 Lunar Admin</b>
+      <small id="appSub">Console</small>
     </div>
-
-    <!-- ========== TAB: ONLINE PCs ========== -->
-    <div class="tab-content active" id="tab-pcs">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title"><i class="fas fa-desktop"></i> Online Computers</div>
-            <div class="card-subtitle">Double‑click a row to open full automation window</div>
-          </div>
-          <div class="flex gap-8 items-center">
-            <span class="badge badge-green" id="pcCountBadge">0 online</span>
-            <button class="btn btn-outline btn-sm" id="refreshPCsBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
-            <button class="btn btn-purple btn-sm" id="openMasterBtn"><i class="fas fa-globe"></i> Master</button>
-          </div>
-        </div>
-        <div id="pcListContainer">
-          <div class="empty-state">
-            <i class="fas fa-network-wired"></i>
-            <p>No online computers detected.<br>Start the worker on a PC to see it here.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== TAB: LIVE EXTRACTOR ========== -->
-    <div class="tab-content" id="tab-live">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title"><i class="fas fa-chart-bar"></i> Live Extractor</div>
-            <div class="card-subtitle">Today's live data + date archive</div>
-          </div>
-        </div>
-        <div class="flex flex-wrap gap-8 items-center mb-12">
-          <button class="btn btn-success btn-sm" id="liveTodayBtn"><i class="fas fa-circle" style="font-size:8px;"></i> LIVE Today</button>
-          <div class="flex items-center gap-8 flex-wrap">
-            <input type="date" class="form-input" id="liveDateInput" style="width:auto; padding:8px 12px;">
-            <button class="btn btn-outline btn-sm" id="loadDateBtn"><i class="fas fa-search"></i> View Date</button>
-            <button class="btn btn-outline btn-sm" id="saveLiveDateBtn"><i class="fas fa-download"></i> Save Live</button>
-            <button class="btn btn-outline btn-sm" id="saveArchiveDateBtn"><i class="fas fa-download"></i> Save Archive</button>
-            <button class="btn btn-primary btn-sm" id="saveBothDateBtn"><i class="fas fa-download"></i> Save Both</button>
-          </div>
-        </div>
-        <div id="liveStatsBar" class="grid-4 mb-12">
-          <div class="stat-card">
-            <div class="stat-label">Total Rows</div>
-            <div class="stat-value blue" id="liveTotalRows">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Live</div>
-            <div class="stat-value green" id="liveLiveRows">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Archive</div>
-            <div class="stat-value orange" id="liveArchiveRows">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">View Mode</div>
-            <div class="stat-value" id="liveViewMode" style="font-size:1rem;">—</div>
-          </div>
-        </div>
-        <div id="liveDataContainer" style="max-height:340px; overflow-y:auto; border-radius:12px; border:1px solid var(--border-light);">
-          <div class="empty-state" style="padding:24px;">
-            <i class="fas fa-table"></i>
-            <p>Load live or date data to see records here.</p>
-          </div>
-        </div>
-        <div class="divider"></div>
-        <div class="card-subtitle mb-8"><i class="fas fa-terminal"></i> Log</div>
-        <div class="log-box" id="liveLogBox" style="max-height:120px;">
-          <div class="log-line"><span class="time">[--:--:--]</span> Ready.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== TAB: LUNAR PANEL ========== -->
-    <div class="tab-content" id="tab-lunar">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title"><i class="fas fa-moon"></i> Lunar Admin</div>
-            <div class="card-subtitle">Devices, licenses, screen control & wipe</div>
-          </div>
-          <div class="flex gap-8 flex-wrap">
-            <span class="badge badge-green" id="lunarOnlineBadge">0 online</span>
-            <button class="btn btn-outline btn-sm" id="lunarRefreshBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
-            <button class="btn btn-success btn-sm" id="lunarLoginAllBtn"><i class="fas fa-sign-in-alt"></i> Login All</button>
-            <button class="btn btn-danger btn-sm" id="lunarLogoutAllBtn"><i class="fas fa-sign-out-alt"></i> Logout All</button>
-            <button class="btn btn-danger btn-sm" id="lunarWipeAllBtn"><i class="fas fa-skull"></i> Wipe All</button>
-          </div>
-        </div>
-        <div class="grid-2" style="gap:14px;">
-          <!-- Devices column -->
-          <div>
-            <div class="card-title mb-8" style="font-size:0.9rem;"><i class="fas fa-laptop"></i> Devices</div>
-            <div id="lunarDeviceList">
-              <div class="empty-state" style="padding:24px;">
-                <i class="fas fa-satellite-dish"></i>
-                <p>No online devices.<br>Start user.py on a computer.</p>
-              </div>
-            </div>
-          </div>
-          <!-- Licenses column -->
-          <div>
-            <div class="flex justify-between items-center mb-8">
-              <div class="card-title" style="font-size:0.9rem;"><i class="fas fa-key"></i> Licenses</div>
-              <div class="flex gap-8">
-                <span class="badge badge-blue" id="lunarLicenseStats">0 total</span>
-                <button class="btn btn-success btn-sm" id="lunarCreateLicenseBtn"><i class="fas fa-plus"></i> New</button>
-                <button class="btn btn-warning btn-sm" id="lunarRemoveExpiredBtn"><i class="fas fa-broom"></i> Clean</button>
-              </div>
-            </div>
-            <div id="lunarLicenseList">
-              <div class="empty-state" style="padding:24px;">
-                <i class="fas fa-key"></i>
-                <p>No licenses yet.<br>Create one to get started.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="divider"></div>
-        <div class="card-subtitle mb-8"><i class="fas fa-terminal"></i> Lunar Log</div>
-        <div class="log-box" id="lunarLogBox" style="max-height:140px;">
-          <div class="log-line"><span class="time">[--:--:--]</span> Lunar panel ready.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========== TAB: ADD PROJECT ========== -->
-    <div class="tab-content" id="tab-add">
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title"><i class="fas fa-database"></i> Add Supabase Project</div>
-            <div class="card-subtitle">Enter connection details. Service Role key required.</div>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Display Name</label>
-          <input class="form-input" id="projName" placeholder="My Project">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Project ID</label>
-          <input class="form-input" id="projId" placeholder="auto-detected from URL">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Supabase URL</label>
-          <input class="form-input" id="projUrl" placeholder="https://xxxx.supabase.co">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Service Role Key (secret)</label>
-          <input class="form-input" id="projServiceKey" type="password" placeholder="eyJ...">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Anon Key (optional)</label>
-          <input class="form-input" id="projAnonKey" type="password" placeholder="eyJ...">
-        </div>
-        <div class="flex gap-8 mt-12">
-          <button class="btn btn-primary" id="saveNewProjectBtn"><i class="fas fa-vial"></i> Test & Save</button>
-          <button class="btn btn-outline" id="clearProjectFormBtn">Clear</button>
-        </div>
-        <div class="mt-8" id="projectFormStatus" style="font-size:0.78rem; color:var(--text-tertiary);"></div>
-      </div>
-    </div>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="themeBtn" title="Theme">🌗</button>
+    <button class="iconbtn accent" id="refreshBtn" title="Refresh">🔄</button>
   </div>
 
-  <!-- ========== MODAL: SCREEN VIEWER ========== -->
-  <div class="modal-overlay" id="screenViewerModal">
-    <div class="modal" style="max-width: 900px; padding: 0; overflow: hidden;">
-      <div style="background: #0a0c10; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between;">
-        <div style="color: #f1f5f9; font-weight: 600; font-size: 0.9rem;" id="screenViewerTitle">🖥 Device</div>
-        <div class="flex gap-8">
-          <button class="btn btn-sm btn-purple" id="toggleControlBtn">🎮 Control</button>
-          <button class="btn btn-sm btn-danger" id="closeScreenViewerBtn">✕ Close</button>
+  <!-- ===== TABS ===== -->
+  <div class="tabs" id="tabs">
+    <button class="tab active" data-tab="dashboard">📊 Dashboard</button>
+    <button class="tab" data-tab="computers">🖥 Computers <span class="badge" id="badgeComputers">0</span></button>
+    <button class="tab" data-tab="licenses">🔑 Licenses <span class="badge" id="badgeLicenses">0</span></button>
+    <button class="tab" data-tab="extractor">📥 Extractor</button>
+    <button class="tab" data-tab="settings">⚙ Settings</button>
+    <button class="tab" data-tab="log">📜 Log</button>
+  </div>
+
+  <!-- ===== CONTENT ===== -->
+  <div class="content" id="content">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="grid grid-4" style="margin-bottom:12px">
+        <div class="stat g"><span class="lbl">ONLINE</span><span class="val" id="sOnline">0</span></div>
+        <div class="stat b"><span class="lbl">LICENSES</span><span class="val" id="sLicenses">0</span></div>
+        <div class="stat o"><span class="lbl">EXPIRING</span><span class="val" id="sExpiring">0</span></div>
+        <div class="stat r"><span class="lbl">EXPIRED</span><span class="val" id="sExpired">0</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ico">⚡</span> Quick Actions</div>
+        <div class="btn-row">
+          <button class="btn green" id="qLoginAll">🔓 Login All</button>
+          <button class="btn red" id="qLogoutAll">🔒 Logout All</button>
+        </div>
+        <div class="btn-row" style="margin-top:8px">
+          <button class="btn purple" id="qShowAll">🖥 Show All Screens</button>
+          <button class="btn orange" id="qCloseAll">🛑 Close All</button>
+        </div>
+        <div class="btn-row" style="margin-top:8px">
+          <button class="btn wipe" id="qWipeAll">☠ Wipe All</button>
         </div>
       </div>
-      <div style="background: #000; min-height: 300px; display: flex; align-items: center; justify-content: center;" id="screenViewerBody">
-        <div style="color: #64748b; font-size: 0.85rem;">Waiting for screen...</div>
-      </div>
-      <div style="background: #0d1017; padding: 8px 18px; display: flex; justify-content: space-between; font-size: 0.7rem; color: #64748b;">
-        <span id="screenViewerFooter">Device ID: —</span>
-        <span id="screenViewerStatus">● LIVE</span>
+
+      <div class="card">
+        <div class="card-title"><span class="ico">🖥</span> Recent Computers</div>
+        <div class="list" id="dashDevices"><div class="empty"><span class="ico">📡</span>No online computers</div></div>
       </div>
     </div>
-  </div>
 
-  <!-- ========== MODAL: LICENSE DIALOG ========== -->
-  <div class="modal-overlay" id="licenseModal">
-    <div class="modal">
-      <div class="modal-title" id="licenseModalTitle">Create License</div>
-      <div class="modal-desc">Set an expiry date/time and optional notes.</div>
-      <div class="form-group">
-        <label class="form-label">License Key</label>
-        <input class="form-input" id="licenseKeyInput" style="font-family: var(--font-mono); font-weight: 600;">
+    <!-- COMPUTERS -->
+    <div class="panel" id="panel-computers">
+      <div class="card">
+        <div class="card-title"><span class="ico">🔍</span> Filter</div>
+        <input id="deviceSearch" placeholder="Search by name, IP, or ID…" style="background:var(--input);border:1px solid var(--border);border-radius:10px;padding:11px 12px;color:var(--txt);font-size:13px;width:100%;outline:none" />
       </div>
-      <div class="flex gap-8 flex-wrap mb-12">
-        <input class="form-input" id="licensePrefix" value="LUNAR" style="width:80px;" placeholder="Prefix">
-        <input class="form-input" id="licenseGroups" value="3" style="width:60px;" placeholder="Groups">
-        <input class="form-input" id="licenseLength" value="6" style="width:60px;" placeholder="Len">
-        <button class="btn btn-primary btn-sm" id="licenseGenerateBtn">Generate</button>
-        <button class="btn btn-outline btn-sm" id="licenseRandomBtn">Random</button>
+      <div class="list" id="deviceList"><div class="empty"><span class="ico">📡</span>Loading…</div></div>
+    </div>
+
+    <!-- LICENSES -->
+    <div class="panel" id="panel-licenses">
+      <div class="card">
+        <div class="btn-row">
+          <button class="btn green" id="newLicenseBtn">➕ Create License</button>
+          <button class="btn orange" id="removeExpiredBtn">🧹 Remove Expired</button>
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Expiry (local time)</label>
-        <input class="form-input" id="licenseExpiry" placeholder="YYYY-MM-DD HH:MM">
+      <div class="card">
+        <div class="card-title"><span class="ico">🔍</span> Filter</div>
+        <input id="licenseSearch" placeholder="Search license key…" style="background:var(--input);border:1px solid var(--border);border-radius:10px;padding:11px 12px;color:var(--txt);font-size:13px;width:100%;outline:none" />
       </div>
-      <div class="flex gap-8 flex-wrap mb-12">
-        <button class="btn btn-outline btn-sm" data-hours="1">+1h</button>
-        <button class="btn btn-outline btn-sm" data-hours="6">+6h</button>
-        <button class="btn btn-outline btn-sm" data-hours="24">+1d</button>
-        <button class="btn btn-outline btn-sm" data-hours="168">+7d</button>
-        <button class="btn btn-outline btn-sm" data-hours="720">+30d</button>
-        <button class="btn btn-outline btn-sm" data-hours="8760">+1y</button>
+      <div class="list" id="licenseList"><div class="empty"><span class="ico">🔑</span>Loading…</div></div>
+    </div>
+
+    <!-- EXTRACTOR -->
+    <div class="panel" id="panel-extractor">
+      <div class="card">
+        <div class="card-title"><span class="ico">📅</span> Date Filter</div>
+        <div class="row">
+          <div class="field" style="margin:0">
+            <label>Date</label>
+            <input type="date" id="exDate" />
+          </div>
+        </div>
+        <div class="btn-row" style="margin-top:10px">
+          <button class="btn blue" id="exLoad">🔎 Load</button>
+          <button class="btn ghost" id="exToday">Today</button>
+          <button class="btn ghost" id="exYesterday">Yesterday</button>
+        </div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Notes</label>
-        <textarea class="form-input" id="licenseNotes" rows="2" placeholder="Optional description"></textarea>
+      <div class="card">
+        <div class="card-title"><span class="ico">⬇</span> Download</div>
+        <div class="btn-row">
+          <button class="btn green" id="exDownloadLive">📥 Live</button>
+          <button class="btn cyan" id="exDownloadArchive">📦 Archive</button>
+          <button class="btn purple" id="exDownloadBoth">📦+📥 Both</button>
+        </div>
       </div>
-      <div class="flex items-center gap-8 mb-12">
-        <button class="toggle active" id="licenseActiveToggle"></button>
-        <span style="font-size:0.82rem; font-weight:600;">License is ACTIVE</span>
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-outline" id="licenseCancelBtn">Cancel</button>
-        <button class="btn btn-success" id="licenseSaveBtn">Create License</button>
+      <div class="card">
+        <div class="card-title"><span class="ico">📋</span> Records <span id="exCount" style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(0)</span></div>
+        <div class="list" id="exList"><div class="empty"><span class="ico">📥</span>Load a date to view records</div></div>
       </div>
     </div>
+
+    <!-- SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <div class="card">
+        <div class="card-title"><span class="ico">🔐</span> Supabase Connection</div>
+        <div class="field">
+          <label>Supabase URL</label>
+          <input id="setUrl" placeholder="https://xxxx.supabase.co" />
+        </div>
+        <div class="field">
+          <label>Service Role Key</label>
+          <input id="setKey" type="password" placeholder="eyJhbGciOi…" />
+        </div>
+        <div class="field">
+          <label>Anon Key (optional)</label>
+          <input id="setAnon" type="password" placeholder="eyJhbGciOi…" />
+        </div>
+        <div class="btn-row">
+          <button class="btn green" id="setSave">💾 Save & Test</button>
+          <button class="btn ghost" id="setClear">Clear</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ico">🖥</span> Extractor Config</div>
+        <div class="row">
+          <div class="field"><label>Members / Group</label><input id="cfgMembers" type="number" value="30" /></div>
+          <div class="field"><label>New Groups</label><input id="cfgNewGroups" type="number" value="0" /></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Max Groups / Account</label><input id="cfgMaxGroups" type="number" value="5" /></div>
+          <div class="field"><label>Mode</label>
+            <select id="cfgMode">
+              <option>1. Create New</option>
+              <option>2. Review Existing</option>
+              <option>3. Both</option>
+              <option>4. Trusted Only</option>
+              <option selected>5. ALL (All Steps)</option>
+              <option>6. Extract Emails + Trusted</option>
+              <option>7. Add Trusted Sender Only</option>
+            </select>
+          </div>
+        </div>
+        <label class="check"><input type="checkbox" id="cfgProcessExisting" checked /> Process Existing</label>
+        <label class="check" style="margin-top:8px"><input type="checkbox" id="cfgAddTrusted" checked /> Add Trusted Senders</label>
+        <label class="check" style="margin-top:8px"><input type="checkbox" id="cfgPngFallback" checked /> PNG Fallback</label>
+        <label class="check" style="margin-top:8px"><input type="checkbox" id="cfgHeadless" /> Headless Mode</label>
+        <div class="btn-row" style="margin-top:12px">
+          <button class="btn blue" id="cfgSave">💾 Save Config</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span class="ico">ℹ</span> About</div>
+        <div style="font-size:12px;color:var(--txt2);line-height:1.7">
+          <b style="color:var(--txt)">Lunar Admin Console</b><br>
+          Single-file web edition.<br>
+          Runs fully client-side. Host on GitHub Pages.<br>
+          <span style="color:var(--muted)">© Lunar Admin — All rights reserved.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOG -->
+    <div class="panel" id="panel-log">
+      <div class="card">
+        <div class="card-title">
+          <span class="ico">📜</span> System Log
+          <button class="btn ghost xs" id="clearLog" style="margin-left:auto">Clear</button>
+        </div>
+        <div class="console" id="logConsole"></div>
+      </div>
+    </div>
+
   </div>
+</div>
 
-  <script>
-    (function() {
-      "use strict";
+<!-- ===== MODALS ===== -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modalBox">
+    <div class="modal-head">
+      <h3 id="modalTitle">Dialog</h3>
+      <button class="iconbtn" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
 
-      // ============================================================
-      // MOCK DATA & STATE (replace with real API calls as needed)
-      // ============================================================
-      const state = {
-        projects: [],
-        onlinePCs: [],
-        lunarDevices: [],
-        lunarLicenses: [],
-        liveRows: [],
-        liveViewMode: '—',
-        currentScreenDevice: null,
-        controlEnabled: false,
-        licenseEditMode: 'create',
-        licenseEditItem: null,
-        logLines: { live: [], lunar: [] }
+<!-- ===== TOASTS ===== -->
+<div id="toasts"></div>
+
+<script>
+/* ============================================================
+   LUNAR ADMIN CONSOLE — Single File Web App
+   ============================================================ */
+'use strict';
+
+/* ---------- CONFIG ---------- */
+const CFG = {
+  DEFAULT_URL: 'https://betkncbanzxexwmwjmoq.supabase.co',
+  DEFAULT_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJldGtuY2Jhbnp4ZXh3bXdqbW9xIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4OTQxMTk3OCwiZXhwIjoyMTA0OTg3OTc4fQ.QnmgO7RyEvxViLFPAWHxEiElzK2lGNKQD0g6Si3x4-g',
+  REFRESH_MS: 5000,
+  ONLINE_TIMEOUT_S: 15,
+  SCREEN_BUCKET: 'lunar_screens',
+  SCREEN_REFRESH_MS: 900,
+  LS_KEY: 'lunar_admin_cfg_v1',
+  LS_LOG: 'lunar_admin_log_v1',
+};
+
+/* ---------- STATE ---------- */
+const S = {
+  url: CFG.DEFAULT_URL,
+  key: CFG.DEFAULT_KEY,
+  anon: CFG.DEFAULT_KEY,
+  devices: {},
+  licenses: {},
+  extractorRows: [],
+  autoDeleted: new Set(),
+  screenWindows: {},
+  deviceFilter: '',
+  licenseFilter: '',
+  log: [],
+  ready: false,
+  refreshTimer: null,
+  lastRefresh: 0,
+};
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+const $  = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
+const el = (tag,cls,html)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;};
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Date.now()*1000 + Math.floor(Math.random()*1000);
+const nowISO = () => new Date().toISOString();
+
+function fmtTime(v){
+  if(!v) return '—';
+  try{
+    let s = String(v); if(s.endsWith('Z')) s = s.slice(0,-1)+'+00:00';
+    const d = new Date(s);
+    if(isNaN(d)) return String(v);
+    const pad = n => String(n).padStart(2,'0');
+    return `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }catch(e){ return String(v); }
+}
+function parseDT(v){
+  if(!v) return null;
+  try{
+    let s = String(v); if(s.endsWith('Z')) s = s.slice(0,-1)+'+00:00';
+    const d = new Date(s); return isNaN(d)?null:d;
+  }catch(e){ return null; }
+}
+function humanize(sec){
+  if(sec==null||isNaN(sec)) return '—';
+  let s = Math.floor(Math.abs(sec));
+  const sign = sec<0?'-':'';
+  const d = Math.floor(s/86400); s%=86400;
+  const h = Math.floor(s/3600); s%=3600;
+  const m = Math.floor(s/60); s%=60;
+  const parts=[];
+  if(d) parts.push(d+'d');
+  if(h||d) parts.push(h+'h');
+  if(m||h||d) parts.push(m+'m');
+  parts.push(s+'s');
+  return sign+parts.join(' ');
+}
+function licenseStatus(item){
+  const exp = parseDT(item.expires_at);
+  if(!exp) return {status:'unknown', left:null, text:'No expiry'};
+  const left = (exp.getTime() - Date.now())/1000;
+  if(left<=0) return {status:'expired', left, text:'EXPIRED ' + humanize(left) + ' ago'};
+  if(left<86400) return {status:'expiring', left, text:humanize(left)+' left'};
+  return {status:'active', left, text:humanize(left)+' left'};
+}
+function isOnline(dev){
+  const d = parseDT(dev.last_seen_at);
+  if(!d) return false;
+  return (Date.now() - d.getTime())/1000 <= CFG.ONLINE_TIMEOUT_S;
+}
+function genKey(prefix,groups,len){
+  prefix = String(prefix||'LUNAR').toUpperCase().replace(/[^A-Z0-9-]/g,'')||'LUNAR';
+  groups = Math.max(1,Math.min(10,parseInt(groups)||3));
+  len = Math.max(1,Math.min(32,parseInt(len)||6));
+  const A = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const parts=[];
+  for(let i=0;i<groups;i++){
+    let p=''; for(let j=0;j<len;j++) p += A[Math.floor(Math.random()*A.length)];
+    parts.push(p);
+  }
+  return prefix+'-'+parts.join('-');
+}
+function parseUserDate(txt){
+  txt = String(txt||'').trim();
+  if(!txt) throw new Error('Empty date/time');
+  // try native
+  let d = new Date(txt);
+  if(!isNaN(d)) return d;
+  const fmts = [
+    /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})$/,
+    /^(\d{2})-(\d{2})-(\d{4})[ T](\d{2}):(\d{2})$/,
+    /^(\d{2})\/(\d{2})\/(\d{4})[ T](\d{2}):(\d{2})$/,
+  ];
+  for(const f of fmts){
+    const m = txt.match(f); if(!m) continue;
+    let y,mo,da,h,mi;
+    if(f===fmts[0]){ y=+m[1]; mo=+m[2]; da=+m[3]; }
+    else { da=+m[1]; mo=+m[2]; y=+m[3]; }
+    h=+m[4]; mi=+m[5];
+    const dt = new Date(y,mo-1,da,h,mi);
+    if(!isNaN(dt)) return dt;
+  }
+  throw new Error('Invalid date/time format');
+}
+
+/* ============================================================
+   LOGGING
+   ============================================================ */
+function log(msg, type='INFO'){
+  const t = new Date().toLocaleTimeString('en-GB');
+  const entry = {t,msg:String(msg),type};
+  S.log.push(entry);
+  if(S.log.length>500) S.log = S.log.slice(-500);
+  const cons = $('#logConsole');
+  if(cons){
+    const line = el('span','ln');
+    line.innerHTML = `<span class="t">[${t}]</span> <span class="${type}">${esc(msg)}</span>`;
+    cons.appendChild(line);
+    cons.scrollTop = cons.scrollHeight;
+  }
+  try{ localStorage.setItem(CFG.LS_LOG, JSON.stringify(S.log.slice(-200))); }catch(e){}
+}
+function restoreLog(){
+  try{
+    const raw = localStorage.getItem(CFG.LS_LOG);
+    if(!raw) return;
+    const arr = JSON.parse(raw);
+    const cons = $('#logConsole');
+    arr.forEach(e=>{
+      const line = el('span','ln');
+      line.innerHTML = `<span class="t">[${e.t}]</span> <span class="${e.type}">${esc(e.msg)}</span>`;
+      cons.appendChild(line);
+    });
+    cons.scrollTop = cons.scrollHeight;
+  }catch(e){}
+}
+
+/* ============================================================
+   TOASTS
+   ============================================================ */
+function toast(msg, type='ok', ms=2600){
+  const box = $('#toasts');
+  const t = el('div','toast '+type);
+  const ico = type==='ok'?'✅':type==='err'?'❌':type==='warn'?'⚠️':'ℹ️';
+  t.innerHTML = `<span class="i">${ico}</span><span>${esc(msg)}</span>`;
+  box.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(12px)'; t.style.transition='all .25s'; setTimeout(()=>t.remove(),260); }, ms);
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+function openModal({title,body,actions=[],wide=false}){
+  const bg = $('#modalBg');
+  const box = $('#modalBox');
+  $('#modalTitle').textContent = title||'';
+  const bodyEl = $('#modalBody');
+  bodyEl.innerHTML = '';
+  if(typeof body==='string') bodyEl.innerHTML = body;
+  else if(body instanceof Node) bodyEl.appendChild(body);
+  const foot = $('#modalFoot');
+  foot.innerHTML = '';
+  actions.forEach(a=>{
+    const b = el('button','btn '+(a.cls||'ghost'));
+    b.textContent = a.label;
+    b.onclick = ()=>{ if(a.onClick) a.onClick(); if(a.close!==false) closeModal(); };
+    if(a.id) b.id = a.id;
+    foot.appendChild(b);
+  });
+  box.style.maxWidth = wide?'720px':'520px';
+  bg.classList.add('show');
+  return {close:closeModal};
+}
+function closeModal(){ $('#modalBg').classList.remove('show'); }
+$('#modalClose').onclick = closeModal;
+$('#modalBg').addEventListener('click', e=>{ if(e.target.id==='modalBg') closeModal(); });
+
+function confirmDialog(title,msg,okLabel='Confirm',danger=false){
+  return new Promise(res=>{
+    openModal({
+      title,
+      body:`<div style="font-size:14px;line-height:1.6;white-space:pre-wrap">${esc(msg)}</div>`,
+      actions:[
+        {label:'Cancel',cls:'ghost',onClick:()=>res(false)},
+        {label:okLabel,cls:danger?'wipe':'red',onClick:()=>res(true)}
+      ]
+    });
+  });
+}
+function promptDialog(title,label,defaultVal='',type='text'){
+  return new Promise(res=>{
+    const wrap = el('div');
+    wrap.innerHTML = `<div class="field"><label>${esc(label)}</label><input id="pmtInput" type="${type}" value="${esc(defaultVal)}" /></div>`;
+    openModal({
+      title, body:wrap,
+      actions:[
+        {label:'Cancel',cls:'ghost',onClick:()=>res(null)},
+        {label:'OK',cls:'blue',onClick:()=>res($('#pmtInput').value)}
+      ]
+    });
+    setTimeout(()=>$('#pmtInput')?.focus(),100);
+  });
+}
+
+/* ============================================================
+   SUPABASE REST CLIENT
+   ============================================================ */
+async function sbFetch(path, {method='GET', body=null, headers={}, params={}}={}){
+  const url = new URL(S.url.replace(/\/$/,'') + path);
+  Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
+  const h = {
+    'apikey': S.key,
+    'Authorization': 'Bearer '+S.key,
+    'Content-Type': 'application/json',
+    ...headers
+  };
+  const opt = {method, headers:h};
+  if(body!=null) opt.body = JSON.stringify(body);
+  const res = await fetch(url.toString(), opt);
+  if(!res.ok){
+    const txt = await res.text().catch(()=>'');
+    throw new Error(`HTTP ${res.status}: ${txt.slice(0,300)}`);
+  }
+  const ct = res.headers.get('content-type')||'';
+  if(ct.includes('application/json')) return res.json();
+  return res.text();
+}
+
+const API = {
+  async select(table, {order=null, desc=true, eq={}, limit=null}={}){
+    const params = {select:'*'};
+    Object.entries(eq).forEach(([k,v])=>params[k]='eq.'+v);
+    if(order) params.order = order+(desc?'.desc':'.asc');
+    if(limit) params.limit = String(limit);
+    return sbFetch('/rest/v1/'+table, {params});
+  },
+  async update(table, data, eq){
+    const params = {};
+    Object.entries(eq).forEach(([k,v])=>params[k]='eq.'+v);
+    return sbFetch('/rest/v1/'+table, {
+      method:'PATCH', body:data, params,
+      headers:{Prefer:'return=representation'}
+    });
+  },
+  async insert(table, data){
+    return sbFetch('/rest/v1/'+table, {
+      method:'POST', body:data,
+      headers:{Prefer:'return=representation'}
+    });
+  },
+  async del(table, eq){
+    const params = {};
+    Object.entries(eq).forEach(([k,v])=>params[k]='eq.'+v);
+    return sbFetch('/rest/v1/'+table, {method:'DELETE', params});
+  },
+  async rpc(fn, args){
+    return sbFetch('/rest/v1/rpc/'+fn, {method:'POST', body:args});
+  }
+};
+
+/* ============================================================
+   MAIN REFRESH
+   ============================================================ */
+let refreshLock = false;
+async function refresh(){
+  if(refreshLock || !S.ready) return;
+  refreshLock = true;
+  $('#refreshBtn').innerHTML = '<span class="spinner"></span>';
+  try{
+    // devices
+    try{
+      const devs = await API.select('lunar_devices',{order:'last_seen_at',desc:true});
+      const map = {};
+      (devs||[]).forEach(d=>{
+        if(d && d.device_id && isOnline(d)) map[d.device_id] = d;
+      });
+      S.devices = map;
+    }catch(e){ log('Device refresh error: '+e.message,'ERROR'); }
+
+    // licenses
+    try{
+      const lic = await API.select('lunar_licenses',{order:'created_at',desc:true});
+      const map = {};
+      (lic||[]).forEach(l=>{ if(l && l.license_key) map[l.license_key] = l; });
+      S.licenses = map;
+    }catch(e){ log('License refresh error: '+e.message,'ERROR'); }
+
+    S.lastRefresh = Date.now();
+    renderAll();
+    checkExpired();
+  }catch(e){
+    log('Refresh failed: '+e.message,'ERROR');
+  }finally{
+    refreshLock = false;
+    $('#refreshBtn').innerHTML = '🔄';
+  }
+}
+
+function startRefresh(){
+  if(S.refreshTimer) clearInterval(S.refreshTimer);
+  S.refreshTimer = setInterval(refresh, CFG.REFRESH_MS);
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function renderAll(){
+  $('#badgeComputers').textContent = Object.keys(S.devices).length;
+  $('#badgeLicenses').textContent = Object.keys(S.licenses).length;
+  $('#sOnline').textContent = Object.keys(S.devices).length;
+  $('#sLicenses').textContent = Object.keys(S.licenses).length;
+  let exp=0, expSoon=0;
+  Object.values(S.licenses).forEach(l=>{
+    const st = licenseStatus(l).status;
+    if(st==='expired') exp++;
+    else if(st==='expiring') expSoon++;
+  });
+  $('#sExpiring').textContent = expSoon;
+  $('#sExpired').textContent = exp;
+  renderDevices();
+  renderDashDevices();
+  renderLicenses();
+}
+
+/* ---------- DEVICES ---------- */
+function deviceCard(dev, compact=false){
+  const id = dev.device_id;
+  const name = dev.computer_name || 'Unknown Computer';
+  const ip = dev.public_ip || '—';
+  const lic = dev.license_key || '';
+  const cmd = (dev.command_status||'') + (dev.command_message? ' • '+dev.command_message : '');
+  const item = el('div','item');
+  item.dataset.id = id;
+
+  const head = el('div','item-head');
+  head.innerHTML = `
+    <span class="expand">▼</span>
+    <span class="dot on"></span>
+    <span class="title">${esc(name)}</span>
+    <span class="sub">${esc(ip)}</span>
+  `;
+  head.onclick = ()=>item.classList.toggle('open');
+
+  const body = el('div','item-body');
+  body.innerHTML = `
+    <div class="kv">
+      <span class="k">License</span><span class="v" style="color:var(--online)">${esc(lic||'Not logged in')}</span>
+      <span class="k">Device ID</span><span class="v">${esc(id)}</span>
+      <span class="k">Last Seen</span><span class="v">${esc(fmtTime(dev.last_seen_at))}</span>
+      <span class="k">Command</span><span class="v" style="color:var(--orange)">${esc(cmd||'—')}</span>
+    </div>
+    ${compact?'':`
+    <div class="field" style="margin-top:10px">
+      <label>Login License</label>
+      <select class="dev-lic" data-id="${esc(id)}"></select>
+    </div>
+    <div class="btn-row">
+      <button class="btn purple sm" data-act="screen" data-id="${esc(id)}">🖥 View</button>
+      <button class="btn green sm" data-act="login" data-id="${esc(id)}">🔓 Login</button>
+      <button class="btn red sm" data-act="logout" data-id="${esc(id)}">🔒 Logout</button>
+      <button class="btn wipe sm" data-act="wipe" data-id="${esc(id)}">☠ Wipe</button>
+    </div>`}
+  `;
+  item.appendChild(head);
+  item.appendChild(body);
+
+  if(!compact){
+    const sel = body.querySelector('.dev-lic');
+    const active = Object.entries(S.licenses)
+      .filter(([k,v])=>v.is_active && licenseStatus(v).status!=='expired')
+      .map(([k])=>k);
+    active.forEach(k=>{
+      const o = el('option'); o.value=k; o.textContent=k; sel.appendChild(o);
+    });
+    if(lic && !active.includes(lic)){
+      const o = el('option'); o.value=lic; o.textContent=lic; sel.appendChild(o);
+    }
+    sel.value = lic || (active[0]||'');
+  }
+  return item;
+}
+
+function renderDevices(){
+  const box = $('#deviceList');
+  box.innerHTML='';
+  const list = Object.values(S.devices).sort((a,b)=>
+    (a.computer_name||'').toLowerCase().localeCompare((b.computer_name||'').toLowerCase()));
+  const f = S.deviceFilter.toLowerCase();
+  const filtered = f ? list.filter(d=>
+    (d.computer_name||'').toLowerCase().includes(f) ||
+    (d.public_ip||'').toLowerCase().includes(f) ||
+    (d.device_id||'').toLowerCase().includes(f)) : list;
+
+  if(!filtered.length){
+    box.innerHTML = '<div class="empty"><span class="ico">📡</span>No online computers'+(f?' match your filter':'')+'</div>';
+    return;
+  }
+  filtered.forEach(d=>box.appendChild(deviceCard(d)));
+  bindDeviceActions(box);
+}
+
+function renderDashDevices(){
+  const box = $('#dashDevices');
+  box.innerHTML='';
+  const list = Object.values(S.devices).slice(0,5);
+  if(!list.length){
+    box.innerHTML = '<div class="empty"><span class="ico">📡</span>No online computers</div>';
+    return;
+  }
+  list.forEach(d=>box.appendChild(deviceCard(d,true)));
+}
+
+function bindDeviceActions(root){
+  root.querySelectorAll('[data-act]').forEach(b=>{
+    b.onclick = async (e)=>{
+      e.stopPropagation();
+      const id = b.dataset.id;
+      const act = b.dataset.act;
+      const dev = S.devices[id];
+      if(!dev) return;
+      if(act==='screen'){ openScreenViewer(id); return; }
+      if(act==='logout'){ await sendCommand(id,'logout',''); return; }
+      if(act==='login'){
+        const sel = root.querySelector(`.dev-lic[data-id="${id}"]`);
+        let key = sel ? sel.value : '';
+        if(!key) key = dev.license_key || '';
+        if(!key){
+          const active = Object.entries(S.licenses)
+            .filter(([k,v])=>v.is_active && licenseStatus(v).status!=='expired')[0];
+          if(active) key = active[0];
+        }
+        if(!key){ toast('No active license available','err'); return; }
+        await sendCommand(id,'login',key);
+        return;
+      }
+      if(act==='wipe'){
+        const ok = await confirmDialog('☠ Wipe Computer',
+          `Permanently wipe everything on:\n\n${dev.computer_name||'Unknown'}\n\nThis CANNOT be undone.`,
+          'WIPE', true);
+        if(!ok) return;
+        const ok2 = await confirmDialog('Final Confirmation','Really wipe this computer? There is NO undo.','WIPE',true);
+        if(!ok2) return;
+        await sendCommand(id,'wipe','');
+        toast('Wipe command sent','warn');
+        return;
+      }
+    };
+  });
+}
+
+/* ---------- LICENSES ---------- */
+function licenseCard(item){
+  const key = item.license_key;
+  const st = licenseStatus(item);
+  const isActive = !!item.is_active;
+  const statusLabel = st.status==='expired'?'EXPIRED':(!isActive?'RESTRICTED':(st.status==='expiring'?'EXPIRING':'ACTIVE'));
+  const statusColor = st.status==='expired'?'var(--red)':(!isActive?'var(--offline)':(st.status==='expiring'?'var(--yellow)':'var(--green)'));
+
+  const card = el('div','item');
+  const head = el('div','item-head');
+  head.innerHTML = `
+    <span class="expand">▼</span>
+    <span class="dot" style="background:${statusColor};box-shadow:0 0 0 3px ${statusColor}22"></span>
+    <span class="title" style="font-family:var(--mono);font-size:12px">${esc(key)}</span>
+    <span class="sub" style="color:${statusColor};font-weight:700">${statusLabel}</span>
+  `;
+  head.onclick = ()=>card.classList.toggle('open');
+
+  const body = el('div','item-body');
+  body.innerHTML = `
+    <div class="kv">
+      <span class="k">Created</span><span class="v">${esc(fmtTime(item.created_at))}</span>
+      <span class="k">Updated</span><span class="v">${esc(fmtTime(item.updated_at))}</span>
+      <span class="k">Expires</span><span class="v">${esc(fmtTime(item.expires_at))}</span>
+      <span class="k">Remaining</span><span class="v" style="color:${statusColor};font-weight:700">${esc(st.text)}</span>
+      <span class="k">Notes</span><span class="v" style="font-family:var(--font)">${esc(item.notes||'—')}</span>
+    </div>
+    <div class="btn-row" style="margin-top:10px">
+      <button class="btn blue sm" data-lic-act="edit" data-key="${esc(key)}">✏ Edit</button>
+      <button class="btn cyan sm" data-lic-act="renew" data-key="${esc(key)}">🔄 Renew</button>
+      ${isActive
+        ? `<button class="btn orange sm" data-lic-act="restrict" data-key="${esc(key)}">⛔ Restrict</button>`
+        : `<button class="btn green sm" data-lic-act="activate" data-key="${esc(key)}">✅ Activate</button>`}
+      <button class="btn wipe sm" data-lic-act="delete" data-key="${esc(key)}">🗑 Delete</button>
+    </div>
+  `;
+  card.appendChild(head);
+  card.appendChild(body);
+  return card;
+}
+
+function renderLicenses(){
+  const box = $('#licenseList');
+  box.innerHTML='';
+  const f = S.licenseFilter.toLowerCase();
+  let list = Object.values(S.licenses);
+  if(f) list = list.filter(l=>l.license_key.toLowerCase().includes(f));
+  list.sort((a,b)=>{
+    const sa = licenseStatus(a).status, sb = licenseStatus(b).status;
+    const ord = {expired:0, expiring:1, active:2, unknown:3};
+    return (ord[sa]-ord[sb]) || (a.license_key||'').localeCompare(b.license_key||'');
+  });
+  if(!list.length){
+    box.innerHTML = '<div class="empty"><span class="ico">🔑</span>No licenses'+(f?' match your filter':'')+'</div>';
+    return;
+  }
+  list.forEach(l=>box.appendChild(licenseCard(l)));
+  box.querySelectorAll('[data-lic-act]').forEach(b=>{
+    b.onclick = ()=>licenseAction(b.dataset.licAct, b.dataset.key);
+  });
+}
+
+async function licenseAction(act, key){
+  const item = S.licenses[key];
+  if(!item) return;
+  if(act==='edit' || act==='renew'){ openLicenseDialog(item); return; }
+  if(act==='activate'){
+    try{
+      await API.update('lunar_licenses',{is_active:true, updated_at:nowISO()},{license_key:key});
+      log('License activated: '+key,'SUCCESS');
+      toast('License activated');
+      S.autoDeleted.delete(key);
+      setTimeout(refresh,300);
+    }catch(e){ toast('Activate failed: '+e.message,'err'); }
+    return;
+  }
+  if(act==='restrict'){
+    const ok = await confirmDialog('Restrict License','Deactivate this license and log out all devices using it?','Restrict',true);
+    if(!ok) return;
+    try{
+      await API.update('lunar_licenses',{is_active:false, updated_at:nowISO()},{license_key:key});
+      log('License restricted: '+key,'WARNING');
+      toast('License restricted','warn');
+      const devs = Object.values(S.devices).filter(d=>d.license_key===key);
+      for(const d of devs) await sendCommand(d.device_id,'logout','',true);
+      setTimeout(refresh,500);
+    }catch(e){ toast('Restrict failed: '+e.message,'err'); }
+    return;
+  }
+  if(act==='delete'){
+    const ok = await confirmDialog('Delete License',
+      `Delete this license?\n\n${key}\n\nThis cannot be undone.`,'Delete',true);
+    if(!ok) return;
+    try{
+      const devs = Object.values(S.devices).filter(d=>d.license_key===key);
+      for(const d of devs){
+        await API.update('lunar_devices',{
+          license_key:null, admin_command:'logout', admin_license_key:'',
+          command_id:uid(), command_created_at:nowISO(),
+          command_status:'pending', command_message:'License deleted',
+          updated_at:nowISO()
+        },{device_id:d.device_id}).catch(()=>{});
+      }
+      await API.del('lunar_licenses',{license_key:key});
+      log('License deleted: '+key,'SUCCESS');
+      toast('License deleted');
+      delete S.licenses[key];
+      S.autoDeleted.delete(key);
+      setTimeout(refresh,300);
+    }catch(e){ toast('Delete failed: '+e.message,'err'); }
+    return;
+  }
+}
+
+/* ============================================================
+   LICENSE DIALOG
+   ============================================================ */
+function openLicenseDialog(existing=null){
+  const isEdit = !!existing;
+  const wrap = el('div');
+  const defaultKey = existing?.license_key || genKey('LUNAR',3,6);
+  let defaultExp;
+  if(existing?.expires_at){
+    const d = parseDT(existing.expires_at);
+    if(d){
+      const pad = n=>String(n).padStart(2,'0');
+      defaultExp = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+  }
+  if(!defaultExp){
+    const d = new Date(Date.now()+24*3600*1000);
+    const pad = n=>String(n).padStart(2,'0');
+    defaultExp = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  wrap.innerHTML = `
+    <div class="field">
+      <label>License Key</label>
+      <input id="licKey" value="${esc(defaultKey)}" ${isEdit?'disabled':''} style="font-family:var(--mono);font-weight:700" />
+    </div>
+    ${!isEdit?`
+    <div class="row">
+      <div class="field"><label>Prefix</label><input id="licPrefix" value="LUNAR" /></div>
+      <div class="field"><label>Groups</label><input id="licGroups" type="number" value="3" /></div>
+      <div class="field"><label>Length</label><input id="licLen" type="number" value="6" /></div>
+    </div>
+    <button class="btn blue sm" id="licGen" style="margin-bottom:10px">🎲 Auto Generate</button>
+    `:''}
+    <div class="field">
+      <label>Expiry (YYYY-MM-DD HH:MM)</label>
+      <input id="licExp" value="${esc(defaultExp)}" />
+    </div>
+    <div class="btn-row" style="margin-bottom:10px">
+      <button class="btn ghost xs" data-quick="1">+1h</button>
+      <button class="btn ghost xs" data-quick="6">+6h</button>
+      <button class="btn ghost xs" data-quick="24">+1d</button>
+      <button class="btn ghost xs" data-quick="168">+7d</button>
+      <button class="btn ghost xs" data-quick="720">+30d</button>
+      <button class="btn ghost xs" data-quick="8760">+1y</button>
+    </div>
+    <div class="field">
+      <label>Notes</label>
+      <textarea id="licNotes">${esc(existing?.notes||'')}</textarea>
+    </div>
+    <label class="check"><input type="checkbox" id="licActive" ${!existing||existing.is_active?'checked':''} /> License is ACTIVE</label>
+  `;
+
+  openModal({
+    title: isEdit?'Edit License':'Create License',
+    body: wrap,
+    actions:[
+      {label:'Cancel',cls:'ghost'},
+      {label:isEdit?'Save Changes':'Create License',cls:'green',onClick:async ()=>{
+        const key = $('#licKey').value.trim();
+        if(!key){ toast('License key required','err'); return false; }
+        let exp;
+        try{ exp = parseUserDate($('#licExp').value); }
+        catch(e){ toast(e.message,'err'); return false; }
+        const payload = {
+          license_key: key,
+          expires_at: exp.toISOString(),
+          notes: $('#licNotes').value.trim(),
+          is_active: $('#licActive').checked,
+          updated_at: nowISO()
+        };
+        try{
+          if(isEdit){
+            await API.update('lunar_licenses', payload, {license_key:key});
+            log('License updated: '+key,'SUCCESS');
+            toast('License updated');
+            S.autoDeleted.delete(key);
+          } else {
+            if(S.licenses[key]){ toast('License key already exists','err'); return false; }
+            payload.created_at = nowISO();
+            await API.insert('lunar_licenses', payload);
+            log('License created: '+key,'SUCCESS');
+            toast('License created');
+          }
+          setTimeout(refresh,300);
+        }catch(e){ toast((isEdit?'Update':'Create')+' failed: '+e.message,'err'); return false; }
+      }}
+    ]
+  });
+
+  if(!isEdit){
+    $('#licGen').onclick = ()=>{
+      $('#licKey').value = genKey($('#licPrefix').value,$('#licGroups').value,$('#licLen').value);
+    };
+  }
+  wrap.querySelectorAll('[data-quick]').forEach(b=>{
+    b.onclick = ()=>{
+      const h = parseInt(b.dataset.quick);
+      const d = new Date(Date.now()+h*3600*1000);
+      const pad = n=>String(n).padStart(2,'0');
+      $('#licExp').value = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    };
+  });
+}
+
+/* ============================================================
+   SEND COMMAND TO DEVICE
+   ============================================================ */
+async function sendCommand(deviceId, command, licenseKey='', silent=false){
+  const dev = S.devices[deviceId];
+  if(!dev){ if(!silent) toast('Device not found','err'); return; }
+  const msg = command==='login'?'Login command sent':command==='logout'?'Logout command sent':'Wipe command sent';
+  const payload = {
+    admin_command: command,
+    admin_license_key: command==='login'?licenseKey:'',
+    command_id: uid(),
+    command_created_at: nowISO(),
+    command_status: 'pending',
+    command_message: msg,
+    updated_at: nowISO()
+  };
+  try{
+    const r = await API.update('lunar_devices', payload, {device_id:deviceId});
+    if(!r || !r.length) throw new Error('No device row updated');
+    log(`${command.toUpperCase()} → ${dev.computer_name||deviceId}`,'SUCCESS');
+    if(!silent) toast(msg);
+    setTimeout(refresh,400);
+  }catch(e){
+    log(`Command error (${command}): ${e.message}`,'ERROR');
+    if(!silent) toast('Command failed: '+e.message,'err');
+  }
+}
+
+/* ============================================================
+   EXTRACTOR
+   ============================================================ */
+async function loadExtractor(){
+  const ds = $('#exDate').value;
+  if(!ds){ toast('Pick a date first','warn'); return; }
+  const [y,m,d] = ds.split('-').map(Number);
+  const start = new Date(Date.UTC(y,m-1,d,0,0,0)).toISOString();
+  const end   = new Date(Date.UTC(y,m-1,d,23,59,59,999)).toISOString();
+  $('#exList').innerHTML = '<div class="empty"><span class="spinner"></span></div>';
+  try{
+    const [live, arch] = await Promise.all([
+      API.select('extracted_group_emails', {params:null}).catch(()=>[]),
+      []
+    ]);
+    // Use raw fetch because we need range params on extracted_group_emails
+    const liveRows = await sbFetch('/rest/v1/extracted_group_emails',{
+      params:{
+        select:'*',
+        'and':`(last_seen.gte.${start},last_seen.lte.${end})`,
+        order:'first_seen.asc'
+      }
+    }).catch(()=>[]);
+    let archRows = [];
+    try{
+      archRows = await sbFetch('/rest/v1/extracted_snapshots',{
+        params:{
+          select:'*',
+          'and':`(snapshot_at.gte.${start},snapshot_at.lte.${end})`,
+          order:'snapshot_at.asc'
+        }
+      });
+    }catch(e){}
+    S.extractorRows = (liveRows||[]).concat(archRows||[]);
+    renderExtractor();
+    log(`Loaded ${S.extractorRows.length} records for ${ds}`,'SUCCESS');
+    toast(`Loaded ${S.extractorRows.length} rows`);
+  }catch(e){
+    log('Extractor load failed: '+e.message,'ERROR');
+    toast('Load failed: '+e.message,'err');
+    $('#exList').innerHTML = '<div class="empty"><span class="ico">⚠️</span>Load failed</div>';
+  }
+}
+
+function renderExtractor(){
+  const box = $('#exList');
+  $('#exCount').textContent = '('+S.extractorRows.length+')';
+  if(!S.extractorRows.length){
+    box.innerHTML = '<div class="empty"><span class="ico">📥</span>No records for this date</div>';
+    return;
+  }
+  box.innerHTML = '';
+  S.extractorRows.forEach(r=>{
+    const item = el('div','item');
+    const head = el('div','item-head');
+    head.innerHTML = `
+      <span class="expand">▼</span>
+      <span class="title">${esc(r.group_email||r.email||'—')}</span>
+      <span class="sub">${esc(r.computer_name||r.source_id||'')}</span>
+    `;
+    head.onclick = ()=>item.classList.toggle('open');
+    const body = el('div','item-body');
+    body.innerHTML = `<div class="kv">
+      <span class="k">Group</span><span class="v">${esc(r.group_name||'—')}</span>
+      <span class="k">Email</span><span class="v">${esc(r.group_email||r.email||'—')}</span>
+      <span class="k">Account</span><span class="v">${esc(r.account||'—')}</span>
+      <span class="k">Source</span><span class="v">${esc(r.source_id||'—')}</span>
+      <span class="k">First Seen</span><span class="v">${esc(fmtTime(r.first_seen||r.snapshot_at))}</span>
+      <span class="k">Last Seen</span><span class="v">${esc(fmtTime(r.last_seen||r.snapshot_at))}</span>
+    </div>`;
+    item.appendChild(head);
+    item.appendChild(body);
+    box.appendChild(item);
+  });
+}
+
+function downloadCSV(rows, label){
+  if(!rows.length){ toast('No rows to save','warn'); return; }
+  const cols = ['source_id','computer_name','local_ip','group_name','group_email','account','row_key','first_seen','last_seen','updated_at','snapshot_at'];
+  const esc2 = v => {
+    if(v==null) return '';
+    const s = String(v);
+    if(/[",\n]/.test(s)) return '"'+s.replace(/"/g,'""')+'"';
+    return s;
+  };
+  const lines = [cols.join(',')];
+  rows.forEach(r=>lines.push(cols.map(c=>esc2(r[c])).join(',')));
+  const blob = new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = el('a'); a.href = url;
+  a.download = `${label}_${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  log(`Saved ${rows.length} rows → ${a.download}`,'SUCCESS');
+  toast(`Saved ${rows.length} rows`);
+}
+
+async function downloadByRange(type){
+  const ds = $('#exDate').value;
+  if(!ds){ toast('Pick a date first','warn'); return; }
+  const [y,m,d] = ds.split('-').map(Number);
+  const start = new Date(Date.UTC(y,m-1,d,0,0,0)).toISOString();
+  const end   = new Date(Date.UTC(y,m-1,d,23,59,59,999)).toISOString();
+  try{
+    let live=[], arch=[];
+    if(type==='live'||type==='both'){
+      live = await sbFetch('/rest/v1/extracted_group_emails',{
+        params:{select:'*','and':`(last_seen.gte.${start},last_seen.lte.${end})`,order:'first_seen.asc'}
+      }).catch(()=>[]);
+    }
+    if(type==='archive'||type==='both'){
+      arch = await sbFetch('/rest/v1/extracted_snapshots',{
+        params:{select:'*','and':`(snapshot_at.gte.${start},snapshot_at.lte.${end})`,order:'snapshot_at.asc'}
+      }).catch(()=>[]);
+    }
+    const rows = live.concat(arch);
+    downloadCSV(rows, type.toUpperCase()+'-'+ds);
+  }catch(e){ toast('Download failed: '+e.message,'err'); }
+}
+
+/* ============================================================
+   SCREEN VIEWER
+   ============================================================ */
+function openScreenViewer(deviceId){
+  const dev = S.devices[deviceId];
+  if(!dev){ toast('Device not found','err'); return; }
+  if(S.screenWindows[deviceId]){ S.screenWindows[deviceId].focus(); return; }
+
+  const name = dev.computer_name||'Unknown';
+  const wrap = el('div');
+  wrap.innerHTML = `
+    <div style="margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <span class="dot on"></span>
+      <b>${esc(name)}</b>
+      <span style="color:var(--muted);font-size:11px;font-family:var(--mono)" id="svStatus">Connecting…</span>
+    </div>
+    <div class="screen-view" id="svScreen"><span class="ph">Waiting for screen…</span></div>
+    <div class="btn-row" style="margin-top:10px">
+      <button class="btn purple sm" id="svCtrl">🎮 Enable Control</button>
+      <button class="btn ghost sm" id="svClipSend">📋 Send Clipboard</button>
+      <button class="btn ghost sm" id="svClipGet">📥 Get Clipboard</button>
+      <button class="btn ghost sm" id="svText">⌨ Send Text</button>
+    </div>
+    <div style="font-size:10px;color:var(--muted);margin-top:8px">Device ID: <span style="font-family:var(--mono)">${esc(deviceId)}</span></div>
+  `;
+
+  // enable screen view on server
+  API.rpc('lunar_set_screen_view',{p_device_id:deviceId, p_active:true}).catch(()=>{});
+
+  let controlEnabled = false;
+  let lastFrame = -1;
+  let lastClipId = 0;
+
+  const modal = openModal({
+    title:'🖥 '+name,
+    body:wrap,
+    wide:true,
+    actions:[{label:'Close Viewer',cls:'red',onClick:()=>{
+      clearInterval(timer);
+      API.rpc('lunar_set_control',{p_device_id:deviceId,p_enabled:false}).catch(()=>{});
+      API.rpc('lunar_set_screen_view',{p_device_id:deviceId,p_active:false}).catch(()=>{});
+      delete S.screenWindows[deviceId];
+    }}]
+  });
+  S.screenWindows[deviceId] = modal;
+
+  async function fetchFrame(){
+    try{
+      const rows = await API.select('lunar_devices',{
+        eq:{device_id:deviceId},
+        limit:1
+      });
+      if(!rows || !rows.length) return;
+      const row = rows[0];
+      if(!row.screen_view_active){
+        $('#svStatus').textContent = 'Stream inactive';
+        return;
+      }
+      const path = row.screen_storage_path;
+      const fid = row.screen_frame_id || 0;
+      if(!path){ $('#svStatus').textContent='Waiting for first frame…'; return; }
+      if(fid === lastFrame) return;
+      lastFrame = fid;
+      const url = `${S.url.replace(/\/$/,'')}/storage/v1/object/public/${CFG.SCREEN_BUCKET}/${path}?t=${Date.now()}`;
+      const img = new Image();
+      img.onload = ()=>{
+        const box = $('#svScreen');
+        if(box){ box.innerHTML=''; box.appendChild(img); img.style.maxWidth='100%'; img.style.maxHeight='100%'; }
+        $('#svStatus').textContent = '● LIVE • '+fmtTime(row.screen_last_upload);
       };
+      img.onerror = ()=>{ $('#svStatus').textContent = 'Frame error'; };
+      img.src = url;
+    }catch(e){ $('#svStatus').textContent = 'Error: '+e.message.slice(0,40); }
+  }
 
-      // ============================================================
-      // UTILITIES
-      // ============================================================
-      function qs(sel, parent) { return (parent || document).querySelector(sel); }
-      function qsa(sel, parent) { return Array.from((parent || document).querySelectorAll(sel)); }
-      function el(tag, cls, html) {
-        const e = document.createElement(tag);
-        if (cls) e.className = cls;
-        if (html) e.innerHTML = html;
-        return e;
+  async function pollClip(){
+    try{
+      const rows = await API.select('lunar_devices',{eq:{device_id:deviceId},limit:1});
+      if(!rows?.length) return;
+      const row = rows[0];
+      const cid = row.clipboard_id||0;
+      if(cid !== lastClipId && row.clipboard_direction==='to_admin'){
+        lastClipId = cid;
+        try{ await navigator.clipboard.writeText(row.clipboard_text||''); toast('Clipboard received'); }catch(e){}
       }
-      function nowTime() {
-        const d = new Date();
-        return d.toTimeString().slice(0,8);
-      }
-      function logTo(boxId, msg, type) {
-        const box = qs('#' + boxId);
-        if (!box) return;
-        const time = nowTime();
-        const cls = type || '';
-        const line = `<div class="log-line"><span class="time">[${time}]</span> <span class="${cls}">${msg}</span></div>`;
-        box.insertAdjacentHTML('beforeend', line);
-        box.scrollTop = box.scrollHeight;
-        // keep last 100 lines
-        while (box.children.length > 100) box.removeChild(box.firstChild);
-      }
-      function formatTime(value) {
-        if (!value) return '—';
-        try {
-          const d = new Date(value);
-          if (isNaN(d.getTime())) return value;
-          return d.toLocaleString('en-GB', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' });
-        } catch (e) { return value; }
-      }
-      function humanizeSeconds(sec) {
-        sec = Math.abs(Math.floor(sec));
-        const d = Math.floor(sec / 86400);
-        const h = Math.floor((sec % 86400) / 3600);
-        const m = Math.floor((sec % 3600) / 60);
-        const s = sec % 60;
-        let parts = [];
-        if (d) parts.push(d + 'd');
-        if (h || d) parts.push(h + 'h');
-        if (m || h || d) parts.push(m + 'm');
-        parts.push(s + 's');
-        return parts.join(' ');
-      }
-      function licenseTimeLeft(item) {
-        if (!item || !item.expires_at) return { status: 'unknown', text: 'No expiry', seconds: null };
-        const now = Date.now();
-        const exp = new Date(item.expires_at).getTime();
-        if (isNaN(exp)) return { status: 'unknown', text: 'Invalid date', seconds: null };
-        const diff = (exp - now) / 1000;
-        if (diff <= 0) return { status: 'expired', text: 'EXPIRED ' + humanizeSeconds(diff) + ' ago', seconds: diff };
-        if (diff < 86400) return { status: 'expiring', text: humanizeSeconds(diff) + ' left', seconds: diff };
-        return { status: 'active', text: humanizeSeconds(diff) + ' left', seconds: diff };
-      }
-      function uid() { return 'id-' + Math.random().toString(36).slice(2, 11); }
+    }catch(e){}
+  }
 
-      // ============================================================
-      // TAB SWITCHING
-      // ============================================================
-      qsa('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          qsa('.tab-btn').forEach(b => b.classList.remove('active'));
-          qsa('.tab-content').forEach(c => c.classList.remove('active'));
-          btn.classList.add('active');
-          const target = qs('#' + btn.dataset.tab);
-          if (target) target.classList.add('active');
-        });
+  const timer = setInterval(()=>{ fetchFrame(); pollClip(); }, CFG.SCREEN_REFRESH_MS);
+  fetchFrame();
+
+  $('#svCtrl').onclick = async ()=>{
+    controlEnabled = !controlEnabled;
+    try{ await API.rpc('lunar_set_control',{p_device_id:deviceId,p_enabled:controlEnabled}); }catch(e){ toast('Control error: '+e.message,'err'); return; }
+    $('#svCtrl').textContent = controlEnabled?'🛑 Disable Control':'🎮 Enable Control';
+    $('#svCtrl').className = 'btn sm '+(controlEnabled?'red':'purple');
+  };
+
+  $('#svClipSend').onclick = async ()=>{
+    if(!controlEnabled){ toast('Enable control first','warn'); return; }
+    let txt = '';
+    try{ txt = await navigator.clipboard.readText(); }catch(e){}
+    if(!txt) txt = await promptDialog('Send Clipboard','Text to set on remote:')||'';
+    if(!txt) return;
+    try{
+      await API.rpc('lunar_send_clipboard',{p_device_id:deviceId,p_text:txt,p_direction:'to_user'});
+      toast('Clipboard sent');
+    }catch(e){ toast('Send failed: '+e.message,'err'); }
+  };
+  $('#svClipGet').onclick = async ()=>{
+    if(!controlEnabled){ toast('Enable control first','warn'); return; }
+    try{
+      await API.rpc('lunar_send_clipboard',{p_device_id:deviceId,p_text:'',p_direction:'request_from_user'});
+      toast('Clipboard requested');
+    }catch(e){ toast('Request failed: '+e.message,'err'); }
+  };
+  $('#svText').onclick = async ()=>{
+    if(!controlEnabled){ toast('Enable control first','warn'); return; }
+    const txt = await promptDialog('Send Text','Text to type on remote:');
+    if(!txt) return;
+    try{
+      await API.rpc('lunar_send_input',{
+        p_device_id:deviceId,
+        p_mouse_x:0,p_mouse_y:0,p_mouse_action:'text',
+        p_mouse_button:'',p_scroll_delta:0,
+        p_key_text:txt,p_hotkey_text:''
       });
+      toast('Text sent');
+    }catch(e){ toast('Send failed: '+e.message,'err'); }
+  };
+}
 
-      // ============================================================
-      // PC LIST (Online Computers)
-      // ============================================================
-      function renderPCList() {
-        const container = qs('#pcListContainer');
-        if (!container) return;
-        const pcs = state.onlinePCs;
-        qs('#pcCountBadge').textContent = pcs.length + ' online';
-        if (!pcs.length) {
-          container.innerHTML = `<div class="empty-state"><i class="fas fa-network-wired"></i><p>No online computers detected.<br>Start the worker on a PC to see it here.</p></div>`;
-          return;
-        }
-        let html = '';
-        pcs.forEach(pc => {
-          html += `
-            <div class="list-item" data-id="${pc.id}" style="cursor:pointer;">
-              <div class="list-item-left">
-                <div class="list-icon"><i class="fas fa-desktop"></i></div>
-                <div class="list-info">
-                  <div class="list-name">${pc.computer || 'Unknown'}</div>
-                  <div class="list-meta">${pc.ip || '—'} · ${pc.source_id || ''}</div>
-                </div>
-              </div>
-              <div class="flex items-center gap-8">
-                <span class="badge ${pc.state === 'running' ? 'badge-green' : 'badge-gray'}">${pc.state || 'idle'}</span>
-                <span class="badge badge-blue">${pc.records || 0} records</span>
-                <button class="btn btn-sm btn-purple open-pc-btn" data-id="${pc.id}"><i class="fas fa-external-link-alt"></i></button>
-              </div>
-            </div>`;
-        });
-        container.innerHTML = html;
-        qsa('.open-pc-btn', container).forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const id = btn.dataset.id;
-            const pc = pcs.find(p => p.id === id);
-            if (pc) logTo('liveLogBox', `🖥 Opening PC window: ${pc.computer}`, 'success');
-          });
-        });
-        qsa('.list-item', container).forEach(item => {
-          item.addEventListener('dblclick', () => {
-            const id = item.dataset.id;
-            const pc = pcs.find(p => p.id === id);
-            if (pc) logTo('liveLogBox', `🖥 Double‑click PC: ${pc.computer}`, 'success');
-          });
-        });
-      }
+/* ============================================================
+   EXPIRED LICENSE AUTO-CHECK
+   ============================================================ */
+async function checkExpired(){
+  for(const [key,item] of Object.entries(S.licenses)){
+    const st = licenseStatus(item);
+    if(st.status==='expired' && !S.autoDeleted.has(key)){
+      S.autoDeleted.add(key);
+      // auto-disable
+      try{
+        await API.update('lunar_licenses',{is_active:false, updated_at:nowISO(), notes:(item.notes||'')+' [auto-expired]'},{license_key:key});
+        log('License auto-disabled (expired): '+key,'WARNING');
+        const devs = Object.values(S.devices).filter(d=>d.license_key===key);
+        for(const d of devs) await sendCommand(d.device_id,'logout','',true);
+      }catch(e){ log('Auto-disable error: '+e.message,'ERROR'); }
+    }
+  }
+}
 
-      // Refresh PCs
-      function refreshPCs() {
-        // Simulate fetching — replace with real API
-        const mock = [
-          { id: uid(), computer: 'DESKTOP-01', ip: '192.168.1.10', source_id: 'src_01', state: 'running', records: 1247 },
-          { id: uid(), computer: 'DESKTOP-02', ip: '192.168.1.11', source_id: 'src_02', state: 'idle', records: 0 },
-          { id: uid(), computer: 'LAPTOP-X', ip: '192.168.1.12', source_id: 'src_03', state: 'running', records: 892 },
-        ];
-        state.onlinePCs = mock;
-        renderPCList();
-      }
+/* ============================================================
+   BULK ACTIONS
+   ============================================================ */
+async function loginAll(){
+  if(!Object.keys(S.devices).length){ toast('No online computers','warn'); return; }
+  const active = Object.entries(S.licenses).filter(([k,v])=>v.is_active && licenseStatus(v).status!=='expired');
+  if(!active.length){ toast('No active licenses','err'); return; }
+  const lic = active[0][0];
+  const ok = await confirmDialog('Login All',
+    `Send LOGIN AUTO to ${Object.keys(S.devices).length} computer(s)?\n\nLicense: ${lic}`,'Login All');
+  if(!ok) return;
+  for(const id of Object.keys(S.devices)){
+    await sendCommand(id,'login',lic,true);
+    await new Promise(r=>setTimeout(r,150));
+  }
+  toast('Login All dispatched');
+}
+async function logoutAll(){
+  if(!Object.keys(S.devices).length){ toast('No online computers','warn'); return; }
+  const ok = await confirmDialog('Logout All',
+    `Send LOGOUT to ${Object.keys(S.devices).length} computer(s)?`,'Logout All');
+  if(!ok) return;
+  for(const id of Object.keys(S.devices)){
+    await sendCommand(id,'logout','',true);
+    await new Promise(r=>setTimeout(r,150));
+  }
+  toast('Logout All dispatched');
+}
+async function wipeAll(){
+  if(!Object.keys(S.devices).length){ toast('No online computers','warn'); return; }
+  const ok = await confirmDialog('☠ WIPE ALL',
+    `Permanently wipe ALL ${Object.keys(S.devices).length} online computer(s)?\n\nThis CANNOT be undone.`,'WIPE ALL',true);
+  if(!ok) return;
+  const ok2 = await confirmDialog('Final Confirmation','Really wipe ALL computers? There is NO undo.','WIPE',true);
+  if(!ok2) return;
+  for(const id of Object.keys(S.devices)){
+    await sendCommand(id,'wipe','',true);
+    await new Promise(r=>setTimeout(r,200));
+  }
+  toast('Wipe All dispatched','warn');
+}
+async function showAllScreens(){
+  if(!Object.keys(S.devices).length){ toast('No online computers','warn'); return; }
+  const ok = await confirmDialog('Show All Screens',
+    `Open live screen viewers for ${Object.keys(S.devices).length} computer(s)?`,'Open All');
+  if(!ok) return;
+  Object.keys(S.devices).forEach(id=>openScreenViewer(id));
+}
+async function closeAllScreens(){
+  const ids = Object.keys(S.screenWindows);
+  if(!ids.length){ toast('No open viewers','warn'); return; }
+  for(const id of ids){
+    try{ S.screenWindows[id].close(); }catch(e){}
+  }
+  S.screenWindows = {};
+  toast('All viewers closed');
+}
 
-      qs('#refreshPCsBtn')?.addEventListener('click', () => { refreshPCs(); logTo('liveLogBox', 'PC list refreshed', 'success'); });
-      qs('#openMasterBtn')?.addEventListener('click', () => { logTo('liveLogBox', '🌐 Master window opened (simulated)', 'warning'); });
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+function loadSettings(){
+  try{
+    const raw = localStorage.getItem(CFG.LS_KEY);
+    if(raw){
+      const o = JSON.parse(raw);
+      if(o.url) S.url = o.url;
+      if(o.key) S.key = o.key;
+      if(o.anon) S.anon = o.anon;
+    }
+  }catch(e){}
+  $('#setUrl').value = S.url;
+  $('#setKey').value = S.key;
+  $('#setAnon').value = S.anon;
+  try{
+    const raw = localStorage.getItem(CFG.LS_KEY+'_cfg');
+    if(raw){
+      const c = JSON.parse(raw);
+      if(c.members) $('#cfgMembers').value = c.members;
+      if(c.newGroups!=null) $('#cfgNewGroups').value = c.newGroups;
+      if(c.maxGroups) $('#cfgMaxGroups').value = c.maxGroups;
+      if(c.mode) $('#cfgMode').value = c.mode;
+      if(c.processExisting!=null) $('#cfgProcessExisting').checked = c.processExisting;
+      if(c.addTrusted!=null) $('#cfgAddTrusted').checked = c.addTrusted;
+      if(c.pngFallback!=null) $('#cfgPngFallback').checked = c.pngFallback;
+      if(c.headless!=null) $('#cfgHeadless').checked = c.headless;
+    }
+  }catch(e){}
+}
+function saveSettings(){
+  S.url = $('#setUrl').value.trim() || CFG.DEFAULT_URL;
+  S.key = $('#setKey').value.trim() || CFG.DEFAULT_KEY;
+  S.anon = $('#setAnon').value.trim() || S.key;
+  if(!S.url.startsWith('http')) S.url = 'https://'+S.url;
+  S.url = S.url.replace(/\/$/,'');
+  localStorage.setItem(CFG.LS_KEY, JSON.stringify({url:S.url,key:S.key,anon:S.anon}));
+  localStorage.setItem(CFG.LS_KEY+'_cfg', JSON.stringify({
+    members: $('#cfgMembers').value,
+    newGroups: $('#cfgNewGroups').value,
+    maxGroups: $('#cfgMaxGroups').value,
+    mode: $('#cfgMode').value,
+    processExisting: $('#cfgProcessExisting').checked,
+    addTrusted: $('#cfgAddTrusted').checked,
+    pngFallback: $('#cfgPngFallback').checked,
+    headless: $('#cfgHeadless').checked,
+  }));
+  log('Settings saved','SUCCESS');
+  toast('Settings saved');
+  testConnection();
+}
+async function testConnection(){
+  try{
+    await sbFetch('/rest/v1/lunar_devices',{params:{select:'device_id',limit:'1'}});
+    S.ready = true;
+    log('Connection OK','SUCCESS');
+    toast('Connected to Supabase');
+    refresh();
+  }catch(e){
+    S.ready = false;
+    log('Connection failed: '+e.message,'ERROR');
+    toast('Connection failed: '+e.message.slice(0,60),'err');
+  }
+}
 
-      // ============================================================
-      // LIVE EXTRACTOR
-      // ============================================================
-      function renderLiveData(rows) {
-        const container = qs('#liveDataContainer');
-        if (!container) return;
-        if (!rows || !rows.length) {
-          container.innerHTML = `<div class="empty-state" style="padding:24px;"><i class="fas fa-table"></i><p>No data.</p></div>`;
-          qs('#liveTotalRows').textContent = '0';
-          qs('#liveLiveRows').textContent = '0';
-          qs('#liveArchiveRows').textContent = '0';
-          return;
-        }
-        const live = rows.filter(r => r._type === 'live');
-        const archive = rows.filter(r => r._type === 'archive');
-        qs('#liveTotalRows').textContent = rows.length;
-        qs('#liveLiveRows').textContent = live.length;
-        qs('#liveArchiveRows').textContent = archive.length;
-        let html = '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-size:0.75rem;">';
-        html += '<thead style="background:var(--bg-input); position:sticky; top:0;"><tr>';
-        ['Source','Computer','Group','Email','Account','First Seen','Last Seen'].forEach(h => {
-          html += `<th style="text-align:left; padding:8px 10px; font-weight:600; color:var(--text-secondary); white-space:nowrap;">${h}</th>`;
-        });
-        html += '</tr></thead><tbody>';
-        rows.slice(0, 200).forEach(r => {
-          html += '<tr style="border-bottom:1px solid var(--border-light);">';
-          html += `<td style="padding:6px 10px; white-space:nowrap;">${r.source_id || '—'}</td>`;
-          html += `<td style="padding:6px 10px; white-space:nowrap;">${r.computer_name || '—'}</td>`;
-          html += `<td style="padding:6px 10px; white-space:nowrap;">${r.group_name || '—'}</td>`;
-          html += `<td style="padding:6px 10px; white-space:nowrap;">${r.group_email || '—'}</td>`;
-          html += `<td style="padding:6px 10px; white-space:nowrap;">${r.account || '—'}</td>`;
-          html += `<td style="padding:6px 10px; white-space:nowrap;">${formatTime(r.first_seen)}</td>`;
-          html += `<td style="padding:6px 10px; white-space:nowrap;">${formatTime(r.last_seen)}</td>`;
-          html += '</tr>';
-        });
-        html += '</tbody></table></div>';
-        if (rows.length > 200) html += `<div style="padding:8px; font-size:0.72rem; color:var(--text-tertiary);">Showing first 200 of ${rows.length} rows</div>`;
-        container.innerHTML = html;
-      }
+/* ============================================================
+   TABS
+   ============================================================ */
+function switchTab(name){
+  $$('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===name));
+  $$('.panel').forEach(p=>p.classList.toggle('active', p.id==='panel-'+name));
+  $('#content').scrollTop = 0;
+}
+$$('.tab').forEach(t=>{ t.onclick = ()=>switchTab(t.dataset.tab); });
 
-      function loadLiveToday() {
-        const mock = [
-          { _type: 'live', source_id: 'src_01', computer_name: 'DESKTOP-01', group_name: 'Group A', group_email: 'groupa@test.com', account: 'user1@outlook.com', first_seen: new Date(Date.now()-3600000).toISOString(), last_seen: new Date().toISOString() },
-          { _type: 'live', source_id: 'src_02', computer_name: 'LAPTOP-X', group_name: 'Group B', group_email: 'groupb@test.com', account: 'user2@outlook.com', first_seen: new Date(Date.now()-7200000).toISOString(), last_seen: new Date().toISOString() },
-          { _type: 'archive', source_id: 'src_01', computer_name: 'DESKTOP-01', group_name: 'Group C', group_email: 'groupc@test.com', account: 'user1@outlook.com', first_seen: new Date(Date.now()-86400000).toISOString(), last_seen: new Date(Date.now()-82800000).toISOString() },
-        ];
-        state.liveRows = mock;
-        state.liveViewMode = 'LIVE (today)';
-        qs('#liveViewMode').textContent = 'LIVE';
-        renderLiveData(mock);
-        logTo('liveLogBox', '🟢 Loaded LIVE today data', 'success');
-      }
+/* ============================================================
+   THEME
+   ============================================================ */
+function toggleTheme(){
+  const cur = document.documentElement.getAttribute('data-theme')||'dark';
+  const next = cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('lunar_theme', next);
+  $('#themeBtn').textContent = next==='dark'?'🌗':'☀️';
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', next==='dark'?'#0a0c10':'#ffffff');
+}
+(function initTheme(){
+  const t = localStorage.getItem('lunar_theme')||'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  if(t==='light') $('#themeBtn').textContent = '☀️';
+})();
 
-      function loadDateData() {
-        const input = qs('#liveDateInput');
-        const dateVal = input ? input.value : '';
-        if (!dateVal) { logTo('liveLogBox', '⚠ Please pick a date', 'warning'); return; }
-        const mock = [
-          { _type: 'live', source_id: 'src_01', computer_name: 'DESKTOP-01', group_name: 'Group A', group_email: 'groupa@test.com', account: 'user1@outlook.com', first_seen: dateVal + 'T08:00:00Z', last_seen: dateVal + 'T10:30:00Z' },
-          { _type: 'archive', source_id: 'src_02', computer_name: 'LAPTOP-X', group_name: 'Group B', group_email: 'groupb@test.com', account: 'user2@outlook.com', first_seen: dateVal + 'T09:15:00Z', last_seen: dateVal + 'T11:45:00Z' },
-        ];
-        state.liveRows = mock;
-        state.liveViewMode = 'DATED ' + dateVal;
-        qs('#liveViewMode').textContent = 'DATED';
-        renderLiveData(mock);
-        logTo('liveLogBox', `🔎 Loaded data for ${dateVal}`, 'success');
-      }
+/* ============================================================
+   EVENT BINDINGS
+   ============================================================ */
+$('#themeBtn').onclick = toggleTheme;
+$('#refreshBtn').onclick = ()=>{ refresh(); toast('Refreshed'); };
+$('#menuBtn').onclick = ()=>{
+  openModal({
+    title:'Menu',
+    body:`<div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn blue full" onclick="switchTab('dashboard');closeModal()">📊 Dashboard</button>
+      <button class="btn purple full" onclick="switchTab('computers');closeModal()">🖥 Computers</button>
+      <button class="btn green full" onclick="switchTab('licenses');closeModal()">🔑 Licenses</button>
+      <button class="btn cyan full" onclick="switchTab('extractor');closeModal()">📥 Extractor</button>
+      <button class="btn ghost full" onclick="switchTab('settings');closeModal()">⚙ Settings</button>
+      <button class="btn ghost full" onclick="switchTab('log');closeModal()">📜 Log</button>
+    </div>`,
+    actions:[]
+  });
+};
 
-      function saveRows(rows, label) {
-        if (!rows || !rows.length) { logTo('liveLogBox', '⚠ No rows to save', 'warning'); return; }
-        logTo('liveLogBox', `💾 Saved ${rows.length} rows as ${label}.csv`, 'success');
-      }
+$('#qLoginAll').onclick = loginAll;
+$('#qLogoutAll').onclick = logoutAll;
+$('#qShowAll').onclick = showAllScreens;
+$('#qCloseAll').onclick = closeAllScreens;
+$('#qWipeAll').onclick = wipeAll;
 
-      qs('#liveTodayBtn')?.addEventListener('click', loadLiveToday);
-      qs('#loadDateBtn')?.addEventListener('click', loadDateData);
-      qs('#saveLiveDateBtn')?.addEventListener('click', () => {
-        const d = qs('#liveDateInput').value || 'today';
-        saveRows(state.liveRows.filter(r => r._type === 'live'), `LIVE-${d}`);
-      });
-      qs('#saveArchiveDateBtn')?.addEventListener('click', () => {
-        const d = qs('#liveDateInput').value || 'today';
-        saveRows(state.liveRows.filter(r => r._type === 'archive'), `ARCHIVE-${d}`);
-      });
-      qs('#saveBothDateBtn')?.addEventListener('click', () => {
-        const d = qs('#liveDateInput').value || 'today';
-        saveRows(state.liveRows, `BOTH-${d}`);
-      });
+$('#newLicenseBtn').onclick = ()=>openLicenseDialog();
+$('#removeExpiredBtn').onclick = async ()=>{
+  const expired = Object.entries(S.licenses).filter(([k,v])=>licenseStatus(v).status==='expired');
+  if(!expired.length){ toast('No expired licenses','warn'); return; }
+  const ok = await confirmDialog('Remove Expired',
+    `Delete ${expired.length} expired license(s)?\n\nThis cannot be undone.`,'Delete All',true);
+  if(!ok) return;
+  for(const [key] of expired){
+    try{ await API.del('lunar_licenses',{license_key:key}); log('Deleted expired: '+key,'SUCCESS'); }
+    catch(e){ log('Delete error: '+e.message,'ERROR'); }
+  }
+  toast('Expired licenses removed');
+  setTimeout(refresh,400);
+};
 
-      // ============================================================
-      // LUNAR PANEL
-      // ============================================================
-      function renderLunarDevices() {
-        const container = qs('#lunarDeviceList');
-        if (!container) return;
-        const devices = state.lunarDevices;
-        qs('#lunarOnlineBadge').textContent = devices.filter(d => d.online).length + ' online';
-        if (!devices.length) {
-          container.innerHTML = `<div class="empty-state" style="padding:24px;"><i class="fas fa-satellite-dish"></i><p>No online devices.<br>Start user.py on a computer.</p></div>`;
-          return;
-        }
-        let html = '';
-        devices.forEach((d, idx) => {
-          if (!d.online) return;
-          const isExpanded = d._expanded || false;
-          html += `
-            <div class="device-card" data-device-id="${d.device_id}">
-              <div class="device-header">
-                <button class="device-expand ${isExpanded ? 'open' : ''}" data-expand="${d.device_id}"><i class="fas fa-chevron-down"></i></button>
-                <div class="device-name">${d.computer_name || 'Unknown'}</div>
-                <span class="badge badge-green">● ONLINE</span>
-                <span class="badge badge-gray">${d.public_ip || '—'}</span>
-                <div class="flex gap-8" style="margin-left:auto;">
-                  <button class="btn btn-sm btn-purple open-screen-btn" data-id="${d.device_id}"><i class="fas fa-tv"></i> View</button>
-                  <button class="btn btn-sm btn-danger wipe-device-btn" data-id="${d.device_id}"><i class="fas fa-skull"></i></button>
-                </div>
-              </div>
-              <div class="device-body ${isExpanded ? 'open' : ''}" id="device-body-${d.device_id}">
-                <div class="device-detail-row"><span class="device-detail-label">License</span><span class="device-detail-value">${d.license_key || 'Not logged in'}</span></div>
-                <div class="device-detail-row"><span class="device-detail-label">Device ID</span><span class="device-detail-value">${d.device_id}</span></div>
-                <div class="device-detail-row"><span class="device-detail-label">Last Seen</span><span class="device-detail-value">${formatTime(d.last_seen_at)}</span></div>
-                <div class="device-detail-row"><span class="device-detail-label">Command Status</span><span class="device-detail-value">${d.command_status || '—'}</span></div>
-                <div class="flex gap-8 mt-12 flex-wrap">
-                  <button class="btn btn-sm btn-success login-device-btn" data-id="${d.device_id}">Login Auto</button>
-                  <button class="btn btn-sm btn-danger logout-device-btn" data-id="${d.device_id}">Logout</button>
-                </div>
-              </div>
-            </div>`;
-        });
-        container.innerHTML = html || `<div class="empty-state" style="padding:24px;"><i class="fas fa-satellite-dish"></i><p>No online devices.</p></div>`;
+$('#deviceSearch').oninput = e=>{ S.deviceFilter = e.target.value; renderDevices(); };
+$('#licenseSearch').oninput = e=>{ S.licenseFilter = e.target.value; renderLicenses(); };
 
-        // Attach events
-        qsa('.device-expand', container).forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const id = btn.dataset.expand;
-            const dev = state.lunarDevices.find(d => d.device_id === id);
-            if (dev) { dev._expanded = !dev._expanded; renderLunarDevices(); }
-          });
-        });
-        qsa('.open-screen-btn', container).forEach(btn => {
-          btn.addEventListener('click', (e) => { e.stopPropagation(); openScreenViewer(btn.dataset.id); });
-        });
-        qsa('.wipe-device-btn', container).forEach(btn => {
-          btn.addEventListener('click', (e) => { e.stopPropagation(); wipeDevice(btn.dataset.id); });
-        });
-        qsa('.login-device-btn', container).forEach(btn => {
-          btn.addEventListener('click', (e) => { e.stopPropagation(); loginDevice(btn.dataset.id); });
-        });
-        qsa('.logout-device-btn', container).forEach(btn => {
-          btn.addEventListener('click', (e) => { e.stopPropagation(); logoutDevice(btn.dataset.id); });
-        });
-      }
+$('#exLoad').onclick = loadExtractor;
+$('#exToday').onclick = ()=>{ const d=new Date(); $('#exDate').value = d.toISOString().slice(0,10); loadExtractor(); };
+$('#exYesterday').onclick = ()=>{ const d=new Date(Date.now()-86400000); $('#exDate').value = d.toISOString().slice(0,10); loadExtractor(); };
+$('#exDownloadLive').onclick = ()=>downloadByRange('live');
+$('#exDownloadArchive').onclick = ()=>downloadByRange('archive');
+$('#exDownloadBoth').onclick = ()=>downloadByRange('both');
 
-      function renderLunarLicenses() {
-        const container = qs('#lunarLicenseList');
-        if (!container) return;
-        const licenses = state.lunarLicenses;
-        qs('#lunarLicenseStats').textContent = licenses.length + ' total';
-        if (!licenses.length) {
-          container.innerHTML = `<div class="empty-state" style="padding:24px;"><i class="fas fa-key"></i><p>No licenses yet.<br>Create one to get started.</p></div>`;
-          return;
-        }
-        let html = '';
-        licenses.forEach(item => {
-          const tl = licenseTimeLeft(item);
-          const statusColor = tl.status === 'active' ? 'badge-green' : (tl.status === 'expiring' ? 'badge-orange' : (tl.status === 'expired' ? 'badge-red' : 'badge-gray'));
-          const statusText = item.is_active ? (tl.status === 'expired' ? 'EXPIRED' : (tl.status === 'expiring' ? 'EXPIRING' : 'ACTIVE')) : 'RESTRICTED';
-          html += `
-            <div class="list-item" style="align-items:flex-start; flex-direction:column; gap:6px;">
-              <div class="flex justify-between items-center w-full flex-wrap gap-4">
-                <div style="font-family:var(--font-mono); font-weight:600; font-size:0.78rem; word-break:break-all;">${item.license_key}</div>
-                <span class="badge ${statusColor}">${statusText}</span>
-              </div>
-              <div class="flex justify-between w-full flex-wrap gap-4">
-                <span style="font-size:0.72rem; color:var(--text-tertiary);">${tl.text}</span>
-                <div class="flex gap-4">
-                  <button class="btn btn-sm btn-outline edit-license-btn" data-key="${item.license_key}"><i class="fas fa-pen"></i></button>
-                  <button class="btn btn-sm btn-outline toggle-license-btn" data-key="${item.license_key}"><i class="fas fa-power-off"></i></button>
-                  <button class="btn btn-sm btn-danger delete-license-btn" data-key="${item.license_key}"><i class="fas fa-trash"></i></button>
-                </div>
-              </div>
-            </div>`;
-        });
-        container.innerHTML = html;
+$('#setSave').onclick = saveSettings;
+$('#setClear').onclick = ()=>{ $('#setUrl').value=''; $('#setKey').value=''; $('#setAnon').value=''; };
+$('#cfgSave').onclick = saveSettings;
 
-        qsa('.edit-license-btn', container).forEach(btn => {
-          btn.addEventListener('click', () => {
-            const key = btn.dataset.key;
-            const lic = state.lunarLicenses.find(l => l.license_key === key);
-            if (lic) openLicenseModal('edit', lic);
-          });
-        });
-        qsa('.toggle-license-btn', container).forEach(btn => {
-          btn.addEventListener('click', () => {
-            const key = btn.dataset.key;
-            const lic = state.lunarLicenses.find(l => l.license_key === key);
-            if (lic) { lic.is_active = !lic.is_active; renderLunarLicenses(); logTo('lunarLogBox', `License ${lic.is_active ? 'activated' : 'restricted'}: ${key}`, 'success'); }
-          });
-        });
-        qsa('.delete-license-btn', container).forEach(btn => {
-          btn.addEventListener('click', () => {
-            const key = btn.dataset.key;
-            if (confirm(`Delete license ${key}?`)) {
-              state.lunarLicenses = state.lunarLicenses.filter(l => l.license_key !== key);
-              renderLunarLicenses();
-              logTo('lunarLogBox', `Deleted license: ${key}`, 'error');
-            }
-          });
-        });
-      }
+$('#clearLog').onclick = ()=>{
+  S.log = [];
+  $('#logConsole').innerHTML = '';
+  localStorage.removeItem(CFG.LS_LOG);
+  toast('Log cleared');
+};
 
-      function refreshLunarDevices() {
-        const mock = [
-          { device_id: 'dev_001', computer_name: 'DESKTOP-LUNAR', public_ip: '203.0.113.42', license_key: 'LUNAR-ABC123', last_seen_at: new Date().toISOString(), online: true, command_status: 'idle', _expanded: false },
-          { device_id: 'dev_002', computer_name: 'LAPTOP-MOON', public_ip: '203.0.113.43', license_key: '', last_seen_at: new Date(Date.now()-30000).toISOString(), online: true, command_status: 'pending', _expanded: false },
-        ];
-        state.lunarDevices = mock;
-        renderLunarDevices();
-      }
+/* ============================================================
+   INIT
+   ============================================================ */
+async function init(){
+  // Default date
+  const today = new Date().toISOString().slice(0,10);
+  $('#exDate').value = today;
 
-      function refreshLunarLicenses() {
-        const mock = [
-          { license_key: 'LUNAR-ABC123', is_active: true, expires_at: new Date(Date.now() + 86400000 * 7).toISOString(), notes: 'Standard license', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-          { license_key: 'LUNAR-XYZ789', is_active: false, expires_at: new Date(Date.now() + 3600000).toISOString(), notes: 'Expiring soon', created_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-        ];
-        state.lunarLicenses = mock;
-        renderLunarLicenses();
-      }
+  restoreLog();
+  loadSettings();
+  log('Lunar Admin Console starting…');
 
-      // ---- Screen Viewer ----
-      function openScreenViewer(deviceId) {
-        const dev = state.lunarDevices.find(d => d.device_id === deviceId);
-        if (!dev) return;
-        state.currentScreenDevice = dev;
-        state.controlEnabled = false;
-        qs('#screenViewerTitle').textContent = '🖥 ' + (dev.computer_name || 'Unknown');
-        qs('#screenViewerFooter').textContent = 'Device ID: ' + deviceId;
-        qs('#screenViewerStatus').textContent = '● LIVE';
-        qs('#screenViewerStatus').style.color = '#4ade80';
-        qs('#screenViewerBody').innerHTML = '<div style="color:#64748b; font-size:0.85rem;">Waiting for screen...</div>';
-        qs('#toggleControlBtn').textContent = '🎮 Control';
-        qs('#toggleControlBtn').className = 'btn btn-sm btn-purple';
-        qs('#screenViewerModal').classList.add('open');
-        logTo('lunarLogBox', `🖥 Opened screen viewer for ${dev.computer_name}`, 'success');
-      }
+  // Ready check
+  if(S.url && S.key){
+    S.ready = true;
+    refresh();
+    startRefresh();
+  } else {
+    log('No Supabase credentials configured','WARNING');
+    switchTab('settings');
+  }
 
-      function closeScreenViewer() {
-        if (state.currentScreenDevice) {
-          logTo('lunarLogBox', `🖥 Closed screen viewer for ${state.currentScreenDevice.computer_name}`, 'warning');
-        }
-        state.currentScreenDevice = null;
-        qs('#screenViewerModal').classList.remove('open');
-      }
+  // Visibility-aware refresh (pause when hidden)
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.hidden){
+      if(S.refreshTimer){ clearInterval(S.refreshTimer); S.refreshTimer=null; }
+    } else {
+      refresh();
+      startRefresh();
+    }
+  });
 
-      qs('#closeScreenViewerBtn')?.addEventListener('click', closeScreenViewer);
-      qs('#screenViewerModal')?.addEventListener('click', (e) => { if (e.target === qs('#screenViewerModal')) closeScreenViewer(); });
+  // Keyboard shortcuts (desktop)
+  document.addEventListener('keydown', e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+    if(e.key==='r' && (e.ctrlKey||e.metaKey)){ e.preventDefault(); refresh(); }
+    if(e.key==='Escape') closeModal();
+    if(e.key>='1'&&e.key<='6'){
+      const tabs = ['dashboard','computers','licenses','extractor','settings','log'];
+      switchTab(tabs[+e.key-1]);
+    }
+  });
+}
 
-      qs('#toggleControlBtn')?.addEventListener('click', () => {
-        state.controlEnabled = !state.controlEnabled;
-        const btn = qs('#toggleControlBtn');
-        if (state.controlEnabled) {
-          btn.textContent = '🛑 Disable Control';
-          btn.className = 'btn btn-sm btn-danger';
-          qs('#screenViewerStatus').textContent = '🎮 CONTROL ACTIVE';
-          qs('#screenViewerStatus').style.color = '#af52de';
-          logTo('lunarLogBox', '🎮 Remote control ENABLED', 'warning');
-        } else {
-          btn.textContent = '🎮 Control';
-          btn.className = 'btn btn-sm btn-purple';
-          qs('#screenViewerStatus').textContent = '● LIVE';
-          qs('#screenViewerStatus').style.color = '#4ade80';
-          logTo('lunarLogBox', '🎮 Remote control DISABLED', 'warning');
-        }
-      });
+window.switchTab = switchTab;
+window.closeModal = closeModal;
 
-      // ---- Wipe ----
-      function wipeDevice(deviceId) {
-        const dev = state.lunarDevices.find(d => d.device_id === deviceId);
-        if (!dev) return;
-        if (confirm(`☠ WIPE ${dev.computer_name}?\n\nThis will permanently delete all files, browser history, and folders.\n\nThis CANNOT be undone.`)) {
-          logTo('lunarLogBox', `☠ WIPE command sent → ${dev.computer_name}`, 'error');
-        }
-      }
-
-      function wipeAllDevices() {
-        const online = state.lunarDevices.filter(d => d.online);
-        if (!online.length) { alert('No online computers.'); return; }
-        if (confirm(`☠ WIPE ALL ${online.length} online computers?\n\nThis CANNOT be undone.`)) {
-          online.forEach(d => logTo('lunarLogBox', `☠ WIPE ALL → ${d.computer_name}`, 'error'));
-        }
-      }
-
-      // ---- Login / Logout ----
-      function loginDevice(deviceId) {
-        const dev = state.lunarDevices.find(d => d.device_id === deviceId);
-        if (!dev) return;
-        logTo('lunarLogBox', `🔑 LOGIN command sent → ${dev.computer_name}`, 'success');
-      }
-
-      function logoutDevice(deviceId) {
-        const dev = state.lunarDevices.find(d => d.device_id === deviceId);
-        if (!dev) return;
-        logTo('lunarLogBox', `🔒 LOGOUT command sent → ${dev.computer_name}`, 'warning');
-      }
-
-      function loginAllDevices() {
-        const online = state.lunarDevices.filter(d => d.online);
-        if (!online.length) { alert('No online computers.'); return; }
-        online.forEach(d => logTo('lunarLogBox', `🔑 LOGIN ALL → ${d.computer_name}`, 'success'));
-      }
-
-      function logoutAllDevices() {
-        const online = state.lunarDevices.filter(d => d.online);
-        if (!online.length) { alert('No online computers.'); return; }
-        online.forEach(d => logTo('lunarLogBox', `🔒 LOGOUT ALL → ${d.computer_name}`, 'warning'));
-      }
-
-      // ---- License Modal ----
-      function openLicenseModal(mode, item) {
-        state.licenseEditMode = mode || 'create';
-        state.licenseEditItem = item || null;
-        const modal = qs('#licenseModal');
-        const title = qs('#licenseModalTitle');
-        const keyInput = qs('#licenseKeyInput');
-        const expiryInput = qs('#licenseExpiry');
-        const notesInput = qs('#licenseNotes');
-        const activeToggle = qs('#licenseActiveToggle');
-        const saveBtn = qs('#licenseSaveBtn');
-
-        if (mode === 'edit' && item) {
-          title.textContent = 'Edit License';
-          saveBtn.textContent = 'Save Changes';
-          keyInput.value = item.license_key || '';
-          keyInput.disabled = true;
-          expiryInput.value = item.expires_at ? new Date(item.expires_at).toISOString().slice(0,16).replace('T',' ') : '';
-          notesInput.value = item.notes || '';
-          activeToggle.classList.toggle('active', item.is_active !== false);
-        } else {
-          title.textContent = 'Create License';
-          saveBtn.textContent = 'Create License';
-          keyInput.value = generateLicenseKey();
-          keyInput.disabled = false;
-          expiryInput.value = '';
-          notesInput.value = '';
-          activeToggle.classList.add('active');
-        }
-        modal.classList.add('open');
-      }
-
-      function generateLicenseKey() {
-        const prefix = qs('#licensePrefix')?.value || 'LUNAR';
-        const groups = parseInt(qs('#licenseGroups')?.value) || 3;
-        const len = parseInt(qs('#licenseLength')?.value) || 6;
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let parts = [];
-        for (let g = 0; g < groups; g++) {
-          let part = '';
-          for (let i = 0; i < len; i++) part += chars[Math.floor(Math.random() * chars.length)];
-          parts.push(part);
-        }
-        return prefix.toUpperCase() + '-' + parts.join('-');
-      }
-
-      qs('#licenseGenerateBtn')?.addEventListener('click', () => {
-        qs('#licenseKeyInput').value = generateLicenseKey();
-      });
-
-      qs('#licenseRandomBtn')?.addEventListener('click', () => {
-        const prefixes = ['LUNAR','STAR','NOVA','ORBIT','MOON','COMET'];
-        qs('#licensePrefix').value = prefixes[Math.floor(Math.random()*prefixes.length)];
-        qs('#licenseGroups').value = [3,4,5][Math.floor(Math.random()*3)];
-        qs('#licenseLength').value = [4,5,6,8][Math.floor(Math.random()*4)];
-        qs('#licenseKeyInput').value = generateLicenseKey();
-      });
-
-      qsa('[data-hours]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const hours = parseInt(btn.dataset.hours);
-          const d = new Date(Date.now() + hours * 3600000);
-          const pad = n => String(n).padStart(2,'0');
-          qs('#licenseExpiry').value = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        });
-      });
-
-      qs('#licenseActiveToggle')?.addEventListener('click', function() {
-        this.classList.toggle('active');
-      });
-
-      qs('#licenseCancelBtn')?.addEventListener('click', () => {
-        qs('#licenseModal').classList.remove('open');
-      });
-
-      qs('#licenseSaveBtn')?.addEventListener('click', () => {
-        const key = qs('#licenseKeyInput').value.trim();
-        const expiry = qs('#licenseExpiry').value.trim();
-        const notes = qs('#licenseNotes').value.trim();
-        const active = qs('#licenseActiveToggle').classList.contains('active');
-        if (!key) { alert('License key is required.'); return; }
-        if (!expiry) { alert('Expiry date/time is required.'); return; }
-
-        const expiresAt = new Date(expiry.replace(' ', 'T') + ':00').toISOString();
-
-        if (state.licenseEditMode === 'edit' && state.licenseEditItem) {
-          const idx = state.lunarLicenses.findIndex(l => l.license_key === state.licenseEditItem.license_key);
-          if (idx !== -1) {
-            state.lunarLicenses[idx] = { ...state.lunarLicenses[idx], expires_at: expiresAt, notes, is_active: active, updated_at: new Date().toISOString() };
-          }
-          logTo('lunarLogBox', `License updated: ${key}`, 'success');
-        } else {
-          if (state.lunarLicenses.some(l => l.license_key === key)) {
-            alert('A license with this key already exists.'); return;
-          }
-          state.lunarLicenses.push({
-            license_key: key, is_active: active, expires_at: expiresAt, notes,
-            created_at: new Date().toISOString(), updated_at: new Date().toISOString()
-          });
-          logTo('lunarLogBox', `License created: ${key}`, 'success');
-        }
-        qs('#licenseModal').classList.remove('open');
-        renderLunarLicenses();
-      });
-
-      // ---- Lunar buttons ----
-      qs('#lunarRefreshBtn')?.addEventListener('click', () => { refreshLunarDevices(); refreshLunarLicenses(); logTo('lunarLogBox', 'Refreshed lunar data', 'success'); });
-      qs('#lunarLoginAllBtn')?.addEventListener('click', loginAllDevices);
-      qs('#lunarLogoutAllBtn')?.addEventListener('click', logoutAllDevices);
-      qs('#lunarWipeAllBtn')?.addEventListener('click', wipeAllDevices);
-      qs('#lunarCreateLicenseBtn')?.addEventListener('click', () => openLicenseModal('create'));
-      qs('#lunarRemoveExpiredBtn')?.addEventListener('click', () => {
-        const expired = state.lunarLicenses.filter(l => licenseTimeLeft(l).status === 'expired');
-        if (!expired.length) { alert('No expired licenses.'); return; }
-        if (confirm(`Delete ${expired.length} expired license(s)?`)) {
-          state.lunarLicenses = state.lunarLicenses.filter(l => licenseTimeLeft(l).status !== 'expired');
-          renderLunarLicenses();
-          logTo('lunarLogBox', `Removed ${expired.length} expired licenses`, 'warning');
-        }
-      });
-
-      // ---- Open Lunar tab button ----
-      qs('#openLunarBtn')?.addEventListener('click', () => {
-        qsa('.tab-btn').forEach(b => b.classList.remove('active'));
-        qsa('.tab-content').forEach(c => c.classList.remove('active'));
-        qs('[data-tab="tab-lunar"]').classList.add('active');
-        qs('#tab-lunar').classList.add('active');
-        refreshLunarDevices();
-        refreshLunarLicenses();
-        logTo('lunarLogBox', '🌙 Lunar Panel opened', 'success');
-      });
-
-      // ============================================================
-      // ADD PROJECT
-      // ============================================================
-      qs('#addProjectBtn')?.addEventListener('click', () => {
-        qsa('.tab-btn').forEach(b => b.classList.remove('active'));
-        qsa('.tab-content').forEach(c => c.classList.remove('active'));
-        qs('[data-tab="tab-add"]').classList.add('active');
-        qs('#tab-add').classList.add('active');
-      });
-
-      qs('#saveNewProjectBtn')?.addEventListener('click', () => {
-        const name = qs('#projName').value.trim();
-        const pid = qs('#projId').value.trim();
-        const url = qs('#projUrl').value.trim();
-        const skey = qs('#projServiceKey').value.trim();
-        const akey = qs('#projAnonKey').value.trim();
-        if (!url) { qs('#projectFormStatus').textContent = '❌ URL required'; return; }
-        if (!skey && !akey) { qs('#projectFormStatus').textContent = '❌ Service key or Anon key required'; return; }
-        qs('#projectFormStatus').textContent = '⏳ Testing…';
-        setTimeout(() => {
-          qs('#projectFormStatus').textContent = '✅ Project saved (simulated)';
-          logTo('liveLogBox', `Project added: ${name || url}`, 'success');
-          qs('#projName').value = ''; qs('#projId').value = ''; qs('#projUrl').value = '';
-          qs('#projServiceKey').value = ''; qs('#projAnonKey').value = '';
-        }, 600);
-      });
-
-      qs('#clearProjectFormBtn')?.addEventListener('click', () => {
-        qs('#projName').value = ''; qs('#projId').value = ''; qs('#projUrl').value = '';
-        qs('#projServiceKey').value = ''; qs('#projAnonKey').value = '';
-        qs('#projectFormStatus').textContent = '';
-      });
-
-      // ============================================================
-      // SAVE PROJECTS
-      // ============================================================
-      qs('#saveProjectsBtn')?.addEventListener('click', () => {
-        logTo('liveLogBox', '💾 Projects saved (simulated)', 'success');
-      });
-
-      // ============================================================
-      // INIT
-      // ============================================================
-      function init() {
-        refreshPCs();
-        loadLiveToday();
-        refreshLunarDevices();
-        refreshLunarLicenses();
-        logTo('liveLogBox', '🚀 Admin console ready', 'success');
-        logTo('lunarLogBox', '🌙 Lunar panel ready', 'success');
-      }
-
-      init();
-
-      // Expose for debugging
-      window.__lunarAdmin = state;
-
-    })();
-  </script>
+init();
+</script>
 </body>
 </html>
